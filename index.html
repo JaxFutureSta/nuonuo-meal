@@ -1,0 +1,3412 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#fff4f8">
+  <title>诺诺今天好好吃饭了吗？</title>
+  <style>
+    :root {
+      --pink: #e95b9e;
+      --pink-deep: #c53d7c;
+      --pink-soft: #ffd9e9;
+      --cream: #fffaf3;
+      --white: #ffffff;
+      --text: #512d3f;
+      --muted: #8a6676;
+      --green: #2f9e76;
+      --green-soft: #def6eb;
+      --yellow: #ffd86b;
+      --shadow: 0 16px 38px rgba(181, 82, 126, 0.14);
+      --radius-large: 26px;
+      --radius-medium: 20px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      min-height: 100%;
+      background: #fff4f8;
+    }
+
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      background: #fff4f8;
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .ambient {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .ambient-art {
+      position: absolute;
+      opacity: 0.25;
+      filter: drop-shadow(0 10px 18px rgba(197, 61, 124, 0.12));
+    }
+
+    .ambient-art svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .ambient-bunny {
+      top: 18px;
+      left: -24px;
+      width: 118px;
+      transform: rotate(-8deg);
+    }
+
+    .ambient-cat {
+      top: 142px;
+      right: -24px;
+      width: 110px;
+      transform: rotate(8deg);
+    }
+
+    .ambient-star {
+      right: 18px;
+      bottom: 110px;
+      width: 64px;
+      transform: rotate(12deg);
+    }
+
+    .ambient-heart {
+      left: 12px;
+      bottom: 150px;
+      width: 58px;
+      transform: rotate(-10deg);
+    }
+
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      width: min(100%, 520px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: max(18px, env(safe-area-inset-top)) 16px max(34px, env(safe-area-inset-bottom));
+    }
+
+    .glass-card {
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.73);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .hero {
+      padding: 12px 4px 18px;
+      text-align: center;
+      animation: rise-in 0.55s ease both;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      color: var(--pink-deep);
+      font-size: clamp(26px, 8vw, 36px);
+      line-height: 1.22;
+    }
+
+    .subtitle {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .date-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      padding: 6px 13px;
+      border: 1px solid rgba(233, 91, 158, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--pink-deep);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .welcome-line {
+      min-height: 26px;
+      margin: 14px 0 0;
+      color: #8e4d6e;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .today-status {
+      display: grid;
+      gap: 4px;
+      margin-top: 15px;
+      padding: 13px 14px;
+      border: 1px solid rgba(233, 91, 158, 0.15);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.66);
+    }
+
+    .today-status strong {
+      color: var(--pink-deep);
+      font-size: 15px;
+    }
+
+    .today-status span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .mood-brightening {
+      margin-top: 11px;
+      padding: 11px 13px;
+      border: 1px solid rgba(225, 204, 151, 0.42);
+      border-radius: 16px;
+      background: rgba(255, 248, 228, 0.82);
+      color: #8a7352;
+      font-size: 12px;
+      text-align: center;
+      animation: sun-arrive 1.4s ease both;
+    }
+
+    .mood-brightening[hidden] {
+      display: none;
+    }
+
+    .sound-toggle {
+      position: absolute;
+      top: 8px;
+      right: 16px;
+      min-height: 34px;
+      padding: 5px 9px;
+      border: 1px solid #f2bfd6;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--pink-deep);
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .points-card {
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      padding: 20px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.65s 0.05s ease both;
+    }
+
+    .points-card::after {
+      position: absolute;
+      right: -26px;
+      bottom: -34px;
+      width: 118px;
+      height: 118px;
+      border: 22px solid rgba(255, 182, 211, 0.22);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .points-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .points-title {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .points-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .points-number {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 3px;
+      color: var(--pink-deep);
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .points-number small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .points-number.bump {
+      animation: point-bump 0.48s ease;
+    }
+
+    .progress-track {
+      position: relative;
+      z-index: 1;
+      height: 14px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #f8dce8;
+    }
+
+    .progress-bar {
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--pink);
+      transition: width 0.55s cubic-bezier(0.22, 0.9, 0.32, 1.15);
+    }
+
+    .reward-progress {
+      position: relative;
+      z-index: 1;
+    }
+
+    .reward-progress-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .reward-progress-head strong {
+      color: var(--pink-deep);
+      font-size: 12px;
+    }
+
+    .reward-progress-head-large {
+      margin-top: 13px;
+    }
+
+    .progress-track-large {
+      background: #f1e1f7;
+    }
+
+    .progress-bar-large {
+      background: #b44fc4;
+    }
+
+    .points-actions {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .redeem-button,
+    .primary-button {
+      width: 100%;
+      min-height: 52px;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 18px;
+      background: var(--pink);
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(201, 61, 124, 0.22);
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+    }
+
+    .big-redeem-button {
+      background: #b44fc4;
+      box-shadow: 0 10px 22px rgba(180, 79, 196, 0.22);
+    }
+
+    .redeem-button:active,
+    .primary-button:active,
+    .check-button:active {
+      transform: scale(0.96);
+    }
+
+    .today-complete {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      border: 1px solid #bcebd9;
+      border-radius: 20px;
+      background: rgba(222, 246, 235, 0.92);
+      color: #176749;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(47, 158, 118, 0.12);
+      animation: gentle-pop 0.5s ease both;
+    }
+
+    .mood-card {
+      margin-bottom: 16px;
+      padding: 19px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.58s 0.07s ease both;
+    }
+
+    .mood-card h2 {
+      margin: 0 0 4px;
+      font-size: 18px;
+    }
+
+    .mood-hint {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mood-options {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .mood-options[hidden] {
+      display: none;
+    }
+
+    .mood-button {
+      min-width: 0;
+      padding: 9px 3px;
+      border: 1px solid #f0c9db;
+      border-radius: 16px;
+      background: #fffafc;
+      color: var(--muted);
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .mood-button:active {
+      transform: scale(0.94);
+    }
+
+    .mood-button span,
+    .mood-button small {
+      display: block;
+    }
+
+    .mood-button span {
+      margin-bottom: 2px;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .mood-button small {
+      overflow: hidden;
+      font-size: 9px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mood-button.selected {
+      border-color: var(--pink);
+      background: #ffe8f2;
+      color: var(--pink-deep);
+      box-shadow: 0 8px 18px rgba(201, 61, 124, 0.14);
+      transform: translateY(-2px);
+    }
+
+    .mood-result {
+      min-height: 23px;
+      margin: 13px 0 0;
+      color: var(--pink-deep);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .mood-button[data-mood="none"] {
+      display: flex;
+      grid-column: 1 / -1;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 12px;
+    }
+
+    .mood-button[data-mood="none"] span {
+      display: inline;
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .mood-button[data-mood="none"] small {
+      overflow: visible;
+      font-size: 11px;
+    }
+
+    .mood-companion,
+    .mood-comparison {
+      margin: 8px 0 0;
+      color: #8a756e;
+      font-size: 12px;
+      line-height: 1.75;
+      text-align: center;
+    }
+
+    .mood-comparison {
+      padding-top: 9px;
+      border-top: 1px solid rgba(215, 197, 190, 0.5);
+    }
+
+    .wellness-grid {
+      display: grid;
+      gap: 13px;
+      margin-bottom: 16px;
+    }
+
+    .wellness-card {
+      padding: 19px;
+      border-radius: var(--radius-large);
+      text-align: center;
+      animation: rise-in 0.55s 0.08s ease both;
+    }
+
+    .wellness-title {
+      margin: 0 0 16px;
+      font-size: 17px;
+    }
+
+    .progress-ring {
+      --progress: 0;
+      position: relative;
+      display: grid;
+      width: 132px;
+      height: 132px;
+      margin: 0 auto 10px;
+      border-radius: 50%;
+      background: conic-gradient(
+        var(--pink) calc(var(--progress) * 1%),
+        #f8dce8 0
+      );
+      place-items: center;
+      transition: background 0.45s ease;
+    }
+
+    .progress-ring::after {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.94);
+      content: "";
+    }
+
+    .progress-ring-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      place-items: center;
+    }
+
+    .progress-ring-inner strong {
+      color: var(--pink-deep);
+      font-size: 27px;
+      line-height: 1;
+    }
+
+    .progress-ring-inner span {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .progress-message {
+      margin: 0 0 11px;
+      color: var(--pink-deep);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .meal-symbol-row {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .meal-symbol-row b {
+      color: var(--pink-deep);
+    }
+
+    .gift-box {
+      position: relative;
+      display: grid;
+      width: 122px;
+      height: 122px;
+      margin: 0 auto 7px;
+      border: 0;
+      border-radius: 34px;
+      background: #fff4f9;
+      cursor: pointer;
+      place-items: center;
+      transition: transform 0.18s ease, box-shadow 0.24s ease;
+    }
+
+    .gift-box:active {
+      transform: scale(0.94);
+    }
+
+    .gift-box.ready {
+      animation: gift-glow 1.38s ease-in-out infinite;
+    }
+
+    .gift-box.big-ready {
+      animation-duration: 0.9s;
+    }
+
+    .gift-box.opening {
+      animation: gift-open 0.55s ease;
+    }
+
+    .gift-emoji {
+      font-size: 62px;
+      line-height: 1;
+      transform-origin: center bottom;
+    }
+
+    .gift-box.ready .gift-emoji {
+      animation: gift-wiggle 1.2s ease-in-out infinite;
+    }
+
+    .gift-sparkle {
+      position: absolute;
+      top: 9px;
+      right: 12px;
+      opacity: 0;
+      font-size: 22px;
+      transform: scale(0.7);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .gift-box.ready .gift-sparkle {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .gift-label {
+      margin: 0 0 3px;
+      color: var(--pink-deep);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .gift-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .section-title {
+      margin: 22px 4px 11px;
+      font-size: 19px;
+    }
+
+    .meal-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .meal-card {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      min-height: 116px;
+      padding: 17px;
+      overflow: hidden;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s ease both;
+    }
+
+    .meal-card:nth-child(1) {
+      animation-delay: 0.11s;
+    }
+
+    .meal-card:nth-child(2) {
+      animation-delay: 0.18s;
+    }
+
+    .meal-card:nth-child(3) {
+      animation-delay: 0.25s;
+    }
+
+    .meal-card.completed {
+      border-color: rgba(47, 158, 118, 0.34);
+      background: rgba(241, 255, 249, 0.86);
+    }
+
+    .meal-icon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: #fff3f8;
+      font-size: 29px;
+      place-items: center;
+      box-shadow: inset 0 0 0 1px rgba(233, 91, 158, 0.09);
+    }
+
+    .meal-card.completed .meal-icon {
+      background: var(--green-soft);
+    }
+
+    .meal-info {
+      min-width: 0;
+    }
+
+    .meal-title {
+      margin: 0 0 3px;
+      font-size: 19px;
+    }
+
+    .meal-hint {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .check-button {
+      grid-column: 1 / -1;
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 14px;
+      border: 0;
+      border-radius: 17px;
+      background: var(--pink);
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+    .check-button.completed {
+      background: var(--green);
+      color: #ffffff;
+    }
+
+    .check-button:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+
+    .check-button.pop {
+      animation: button-pop 0.46s ease;
+    }
+
+    .water-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 13px;
+      align-items: center;
+      margin-top: 16px;
+      padding: 17px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s 0.24s ease both;
+    }
+
+    .water-icon {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      background: #e9f5ff;
+      font-size: 30px;
+      place-items: center;
+    }
+
+    .water-info h2 {
+      margin: 0 0 3px;
+      font-size: 18px;
+    }
+
+    .water-info p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .water-button {
+      grid-column: 1 / -1;
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 16px;
+      background: #5da9dd;
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.2s ease;
+    }
+
+    .water-button:active {
+      transform: scale(0.96);
+    }
+
+    .water-button.completed {
+      background: var(--green);
+    }
+
+    .daily-note {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 13px;
+      align-items: flex-start;
+      margin-top: 16px;
+      padding: 19px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s 0.26s ease both;
+    }
+
+    .sunshine-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 13px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      padding: 17px 18px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.52s 0.03s ease both;
+    }
+
+    .sunshine-icon {
+      display: grid;
+      width: 46px;
+      height: 46px;
+      border-radius: 15px;
+      background: #fff2df;
+      font-size: 24px;
+      place-items: center;
+    }
+
+    .sunshine-card h2 {
+      margin: 1px 0 5px;
+      color: var(--pink-deep);
+      font-size: 16px;
+    }
+
+    .sunshine-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .daily-note-icon {
+      display: grid;
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      background: #fff3f8;
+      font-size: 25px;
+      place-items: center;
+    }
+
+    .daily-note h2 {
+      margin: 1px 0 5px;
+      font-size: 17px;
+    }
+
+    .daily-note p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .stats-card {
+      margin-top: 22px;
+      padding: 20px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s 0.28s ease both;
+    }
+
+    .stats-card h2 {
+      margin: 0 0 15px;
+      font-size: 19px;
+    }
+
+    .jax-footer {
+      margin-top: 18px;
+      padding: 22px 20px;
+      border-radius: var(--radius-large);
+      text-align: center;
+      animation: rise-in 0.55s 0.3s ease both;
+    }
+
+    .share-entry {
+      display: grid;
+      gap: 15px;
+      margin-top: 22px;
+      padding: 21px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s 0.29s ease both;
+    }
+
+    .share-entry h2 {
+      margin: 0 0 4px;
+      color: #725a63;
+      font-size: 18px;
+    }
+
+    .share-entry p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .share-card-button {
+      width: 100%;
+      min-height: 50px;
+      border: 0;
+      border-radius: 19px;
+      background: #d89bae;
+      color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 9px 20px rgba(157, 104, 125, 0.15);
+      cursor: pointer;
+      transition: transform 0.18s ease, background 0.2s ease;
+    }
+
+    .share-card-button:active {
+      transform: scale(0.97);
+    }
+
+    .share-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      overflow-y: auto;
+      padding: 18px;
+      background: rgba(71, 54, 48, 0.34);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .share-modal[hidden] {
+      display: none;
+    }
+
+    .share-preview-card {
+      width: min(100%, 520px);
+      margin: 0 auto;
+      padding: 18px;
+      border: 1px solid #eaded7;
+      border-radius: 25px;
+      background: #fffaf6;
+      box-shadow: 0 28px 70px rgba(91, 67, 58, 0.24);
+    }
+
+    .share-preview-card h2 {
+      margin: 0 0 13px;
+      color: #876171;
+      font-size: 19px;
+      text-align: center;
+    }
+
+    .share-canvas-wrap {
+      overflow: hidden;
+      border: 1px solid #e7dad3;
+      border-radius: 18px;
+      background: #fbf8f4;
+      box-shadow: 0 10px 24px rgba(92, 70, 61, 0.08);
+    }
+
+    .share-canvas-wrap canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .share-actions {
+      display: grid;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .share-actions button {
+      width: 100%;
+    }
+
+    .share-hint {
+      min-height: 20px;
+      margin: 11px 0 0;
+      color: #8d7d75;
+      font-size: 12px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .jax-footer-heart {
+      margin-bottom: 7px;
+      font-size: 25px;
+    }
+
+    .jax-footer p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .jax-signature {
+      margin-top: 9px !important;
+      color: var(--pink-deep) !important;
+      font-weight: 800;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .stat-item {
+      min-width: 0;
+      padding: 13px 8px;
+      border-radius: 17px;
+      background: rgba(255, 247, 251, 0.9);
+      text-align: center;
+    }
+
+    .stat-value {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--pink-deep);
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: max(22px, env(safe-area-inset-bottom));
+      left: 18px;
+      z-index: 30;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 15px 17px;
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.94);
+      color: #7f3d5e;
+      box-shadow: 0 18px 44px rgba(147, 53, 97, 0.22);
+      font-weight: 700;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(22px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      padding: 20px;
+      background: rgba(81, 45, 63, 0.34);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    .modal[hidden] {
+      display: none;
+    }
+
+    .modal-card {
+      width: min(100%, 420px);
+      padding: 26px 22px 22px;
+      border: 2px solid rgba(255, 205, 226, 0.95);
+      border-radius: 28px;
+      background: #fffafc;
+      box-shadow: 0 28px 70px rgba(93, 36, 67, 0.26);
+      text-align: center;
+      animation: modal-in 0.42s cubic-bezier(0.18, 0.88, 0.3, 1.18) both;
+    }
+
+    .modal-emoji {
+      margin-bottom: 7px;
+      font-size: 48px;
+      line-height: 1;
+    }
+
+    .modal-card h2 {
+      margin: 0 0 8px;
+      color: var(--pink-deep);
+      font-size: 24px;
+    }
+
+    .modal-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .modal-actions {
+      display: grid;
+      gap: 9px;
+    }
+
+    .soft-button {
+      width: 100%;
+      min-height: 48px;
+      padding: 11px 16px;
+      border: 1px solid #efbfd4;
+      border-radius: 17px;
+      background: #ffffff;
+      color: var(--pink-deep);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .celebration-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: -34px;
+      font-size: var(--size);
+      animation: confetti-fall var(--duration) linear forwards;
+    }
+
+    .floating-heart {
+      position: fixed;
+      z-index: 70;
+      color: var(--pink);
+      font-size: var(--size);
+      pointer-events: none;
+      animation: heart-float 1.15s ease-out forwards;
+    }
+
+    @keyframes rise-in {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes point-bump {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      45% {
+        transform: scale(1.28);
+      }
+    }
+
+    @keyframes button-pop {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      45% {
+        transform: scale(0.93);
+      }
+      72% {
+        transform: scale(1.05);
+      }
+    }
+
+    @keyframes gift-glow {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(233, 91, 158, 0.12), 0 0 18px rgba(233, 91, 158, 0.28);
+      }
+      50% {
+        box-shadow: 0 0 0 9px rgba(233, 91, 158, 0.06), 0 0 30px rgba(233, 91, 158, 0.52);
+      }
+    }
+
+    @keyframes gift-wiggle {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      25% {
+        transform: rotate(-5deg);
+      }
+      75% {
+        transform: rotate(5deg);
+      }
+    }
+
+    @keyframes gift-open {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+      45% {
+        transform: scale(1.12) rotate(-5deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes gentle-pop {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heart-float {
+      from {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(0.7);
+      }
+      to {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--drift)), -105px) scale(1.15) rotate(var(--rotation));
+      }
+    }
+
+    @keyframes confetti-fall {
+      to {
+        opacity: 0;
+        transform: translate(var(--drift), 105vh) rotate(620deg);
+      }
+    }
+
+    @media (min-width: 700px) {
+      .app-shell {
+        padding-top: 30px;
+      }
+
+      .wellness-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stats-grid {
+        gap: 12px;
+      }
+    }
+
+    /* Quiet gift-like visual language */
+    :root {
+      --pink: #d892aa;
+      --pink-deep: #a96580;
+      --pink-soft: #f3e2e8;
+      --cream: #fcf8f3;
+      --white: #fffdfa;
+      --text: #554a45;
+      --muted: #8d7d75;
+      --green: #9fb9aa;
+      --green-soft: #eaf2ed;
+      --yellow: #ebdba7;
+      --shadow: 0 18px 48px rgba(93, 72, 64, 0.09);
+    }
+
+    html,
+    body {
+      background: #fbf8f4;
+    }
+
+    body {
+      color: var(--text);
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+    }
+
+    .app-shell {
+      width: min(100%, 500px);
+      padding-right: 20px;
+      padding-left: 20px;
+    }
+
+    .glass-card {
+      border: 1px solid rgba(225, 211, 204, 0.76);
+      background: rgba(255, 253, 250, 0.79);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px) saturate(1.05);
+      -webkit-backdrop-filter: blur(18px) saturate(1.05);
+    }
+
+    .ambient-art {
+      opacity: 0.16;
+      filter: none;
+    }
+
+    .ambient-bunny {
+      top: 34px;
+      left: -34px;
+      width: 104px;
+    }
+
+    .ambient-cat {
+      top: 190px;
+      right: -38px;
+      width: 98px;
+    }
+
+    .ambient-star {
+      right: 22px;
+      bottom: 150px;
+      width: 48px;
+      opacity: 0.14;
+    }
+
+    .ambient-heart {
+      left: 18px;
+      bottom: 190px;
+      width: 43px;
+      opacity: 0.13;
+    }
+
+    .ambient-cloud {
+      top: 420px;
+      right: -42px;
+      width: 145px;
+      opacity: 0.17;
+      animation: cloud-drift 18s ease-in-out infinite alternate;
+    }
+
+    .hero {
+      padding: 18px 4px 24px;
+    }
+
+    .hero h1 {
+      margin-bottom: 10px;
+      color: #986174;
+      font-family: "STKaiti", "KaiTi", "Microsoft YaHei", serif;
+      font-size: clamp(25px, 7.4vw, 33px);
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .subtitle {
+      margin-bottom: 17px;
+      color: #8d7d75;
+      font-size: 14px;
+      line-height: 1.85;
+    }
+
+    .date-pill {
+      min-height: 32px;
+      border-color: rgba(179, 156, 145, 0.2);
+      background: rgba(255, 253, 250, 0.78);
+      color: #96717f;
+      font-size: 13px;
+    }
+
+    .today-status {
+      gap: 5px;
+      margin-top: 18px;
+      padding: 14px 15px;
+      border-color: rgba(191, 169, 159, 0.18);
+      background: rgba(255, 253, 250, 0.74);
+    }
+
+    .today-status strong {
+      color: #8d6273;
+      font-size: 14px;
+    }
+
+    .today-status span {
+      color: #91817a;
+      font-size: 13px;
+    }
+
+    .sound-toggle {
+      border-color: rgba(185, 161, 151, 0.32);
+      background: rgba(255, 253, 250, 0.84);
+      color: #92717e;
+    }
+
+    .sunshine-card {
+      margin-bottom: 22px;
+      padding: 18px 19px;
+    }
+
+    .sunshine-icon {
+      background: #fbf1e7;
+    }
+
+    .sunshine-card p,
+    .daily-note p {
+      color: #82736c;
+    }
+
+    .points-card {
+      margin-bottom: 22px;
+      padding: 22px;
+    }
+
+    .points-card::after {
+      display: none;
+    }
+
+    .points-title {
+      color: #785e67;
+    }
+
+    .points-note,
+    .mood-hint,
+    .gift-hint,
+    .meal-hint,
+    .water-info p {
+      color: #94847d;
+    }
+
+    .points-number {
+      color: #9f687d;
+      font-size: 26px;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 11px;
+      background: #eee5e0;
+    }
+
+    .progress-bar {
+      background: #d79ab0;
+    }
+
+    .progress-track-large {
+      background: #e9e3de;
+    }
+
+    .progress-bar-large {
+      background: #b9a9cf;
+    }
+
+    .redeem-button,
+    .primary-button {
+      min-height: 50px;
+      border-radius: 20px;
+      background: #d18ea6;
+      box-shadow: 0 10px 22px rgba(154, 102, 124, 0.16);
+    }
+
+    .big-redeem-button {
+      background: #b5a294;
+      box-shadow: 0 10px 22px rgba(122, 104, 92, 0.14);
+    }
+
+    .mood-card,
+    .wellness-card,
+    .stats-card,
+    .water-card,
+    .sunshine-card,
+    .jax-footer {
+      margin-bottom: 22px;
+    }
+
+    .mood-card {
+      padding: 21px;
+    }
+
+    .mood-card h2,
+    .wellness-title,
+    .stats-card h2,
+    .water-info h2,
+    .sunshine-card h2 {
+      color: #725a63;
+    }
+
+    .mood-button {
+      border-color: #e9ded8;
+      border-radius: 18px;
+      background: #fffaf6;
+      color: #8b7c75;
+      box-shadow: 0 5px 12px rgba(98, 75, 65, 0.04);
+    }
+
+    .mood-button span {
+      font-size: 20px;
+    }
+
+    .mood-button.selected {
+      border-color: #d8a7b8;
+      background: #f3e4e9;
+      color: #8c5d70;
+      box-shadow: 0 7px 18px rgba(155, 104, 125, 0.1);
+    }
+
+    .mood-result {
+      color: #99677a;
+    }
+
+    .wellness-grid {
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .wellness-card {
+      padding: 22px;
+    }
+
+    .progress-ring {
+      background: conic-gradient(
+        #d6a0b3 calc(var(--progress) * 1%),
+        #eee4df 0
+      );
+    }
+
+    .progress-ring-inner strong {
+      color: #9f687d;
+      font-weight: 700;
+    }
+
+    .progress-message {
+      color: #9b6a7d;
+      font-weight: 600;
+    }
+
+    .meal-symbol-row b {
+      color: #9d6d7f;
+    }
+
+    .gift-box {
+      width: 116px;
+      height: 116px;
+      border: 1px solid #eaded7;
+      border-radius: 30px;
+      background: #fbf4ee;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    .gift-emoji {
+      font-size: 58px;
+      filter: saturate(0.72);
+    }
+
+    .gift-box.ready {
+      animation: gift-breathe 3.8s ease-in-out infinite;
+    }
+
+    .gift-box.big-ready {
+      animation-duration: 3.2s;
+    }
+
+    .gift-box.ready .gift-emoji {
+      animation: gift-soft-sway 4.2s ease-in-out infinite;
+    }
+
+    .gift-label {
+      color: #8d6575;
+    }
+
+    .meal-card {
+      gap: 15px;
+      min-height: 118px;
+      padding: 18px;
+      border-radius: 25px;
+    }
+
+    .meal-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 17px;
+      background: #fbf4ef;
+      font-size: 26px;
+      box-shadow: inset 0 0 0 1px rgba(192, 170, 160, 0.12);
+    }
+
+    .meal-card.completed .meal-icon {
+      background: #edf3ef;
+    }
+
+    .meal-title {
+      color: #66554e;
+    }
+
+    .check-button {
+      min-height: 47px;
+      border-radius: 18px;
+      background: #d89bae;
+      box-shadow: 0 7px 16px rgba(157, 104, 125, 0.12);
+    }
+
+    .check-button.completed {
+      background: #9fb9aa;
+      box-shadow: 0 7px 16px rgba(98, 130, 111, 0.12);
+    }
+
+    .water-card {
+      margin-top: 22px;
+      padding: 19px;
+    }
+
+    .water-icon {
+      background: #edf3f7;
+    }
+
+    .water-button {
+      border-radius: 18px;
+      background: #a8c3d1;
+      box-shadow: 0 7px 16px rgba(102, 135, 151, 0.12);
+    }
+
+    .water-button.completed {
+      background: #a6baad;
+    }
+
+    .stats-card {
+      margin-top: 22px;
+      padding: 22px;
+    }
+
+    .stats-grid {
+      gap: 12px;
+    }
+
+    .stat-item {
+      border-radius: 19px;
+      background: #fffaf6;
+      box-shadow: inset 0 0 0 1px rgba(225, 210, 203, 0.45);
+    }
+
+    .stat-value {
+      color: #956778;
+      font-weight: 700;
+    }
+
+    .jax-footer {
+      margin-top: 26px;
+      margin-bottom: 0;
+      padding: 18px 20px;
+      box-shadow: 0 10px 30px rgba(93, 72, 64, 0.055);
+    }
+
+    .jax-footer p {
+      color: #95857e;
+      font-size: 13px;
+      letter-spacing: 0;
+    }
+
+    .toast {
+      border-color: rgba(224, 209, 202, 0.9);
+      background: rgba(255, 253, 250, 0.96);
+      color: #856270;
+    }
+
+    .modal-card {
+      border-color: #ead9df;
+      background: #fffaf7;
+    }
+
+    .hero,
+    .points-card,
+    .mood-card,
+    .wellness-card,
+    .meal-card,
+    .water-card,
+    .daily-note,
+    .stats-card,
+    .jax-footer {
+      animation-duration: 0.95s;
+    }
+
+    @keyframes cloud-drift {
+      from {
+        transform: translateX(-8px) translateY(0);
+      }
+      to {
+        transform: translateX(18px) translateY(-8px);
+      }
+    }
+
+    @keyframes sun-arrive {
+      from {
+        opacity: 0;
+        transform: translateY(7px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes gift-breathe {
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(208, 145, 170, 0.08);
+      }
+      50% {
+        box-shadow: 0 0 28px rgba(208, 145, 170, 0.24);
+      }
+    }
+
+    @keyframes gift-soft-sway {
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+      
+      45% {
+        transform: rotate(-2.5deg);
+      }
+      55% {
+        transform: rotate(2.5deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <div class="ambient-art ambient-bunny">
+      <svg viewBox="0 0 150 170">
+        <ellipse cx="48" cy="49" rx="21" ry="40" fill="#ffffff" stroke="#d6659d" stroke-width="6"/>
+        <ellipse cx="102" cy="49" rx="21" ry="40" fill="#ffffff" stroke="#d6659d" stroke-width="6"/>
+        <ellipse cx="48" cy="51" rx="9" ry="24" fill="#ffd4e4"/>
+        <ellipse cx="102" cy="51" rx="9" ry="24" fill="#ffd4e4"/>
+        <circle cx="75" cy="106" r="53" fill="#ffffff" stroke="#d6659d" stroke-width="6"/>
+        <circle cx="56" cy="99" r="6" fill="#512d3f"/>
+        <circle cx="94" cy="99" r="6" fill="#512d3f"/>
+        <path d="M67 119 Q75 127 83 119" fill="none" stroke="#512d3f" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="ambient-art ambient-cat">
+      <svg viewBox="0 0 150 160">
+        <path d="M25 58 L35 15 L69 45 Z" fill="#fffaf3" stroke="#d6659d" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M125 58 L115 15 L81 45 Z" fill="#fffaf3" stroke="#d6659d" stroke-width="6" stroke-linejoin="round"/>
+        <circle cx="75" cy="99" r="55" fill="#fffaf3" stroke="#d6659d" stroke-width="6"/>
+        <path d="M51 89 Q58 96 65 89" fill="none" stroke="#512d3f" stroke-width="5" stroke-linecap="round"/>
+        <path d="M85 89 Q92 96 99 89" fill="none" stroke="#512d3f" stroke-width="5" stroke-linecap="round"/>
+        <path d="M68 111 Q75 118 82 111" fill="none" stroke="#512d3f" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="ambient-art ambient-star">
+      <svg viewBox="0 0 120 120">
+        <path d="M60 8 L74 44 L113 45 L82 68 L93 106 L60 84 L27 106 L38 68 L7 45 L46 44 Z" fill="#ffe6a3" stroke="#e0a923" stroke-width="5" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="ambient-art ambient-heart">
+      <svg viewBox="0 0 130 120">
+        <path d="M65 108 C28 80 13 60 13 39 C13 18 36 10 49 25 L65 43 L81 25 C94 10 117 18 117 39 C117 60 102 80 65 108 Z" fill="#ffafd2" stroke="#d6659d" stroke-width="6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="ambient-art ambient-cloud">
+      <svg viewBox="0 0 150 100">
+        <path d="M36 76 C15 76 10 51 30 43 C34 20 69 14 80 35 C93 18 126 28 122 51 C143 54 144 76 124 76 Z" fill="#dcecf4" stroke="#b9d6e4" stroke-width="4" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <main class="app-shell">
+    <button class="sound-toggle" id="soundToggle" type="button">🔔 音效开</button>
+
+    <header class="hero">
+      <h1>诺诺今天好好吃饭了吗？</h1>
+      <p class="subtitle">每一顿饭，都是在好好照顾自己 ❤️</p>
+      <div class="date-pill" id="todayDate"></div>
+      <div class="today-status">
+        <strong>🌞 今天有好好照顾自己吗？</strong>
+        <span id="todayStatus">🌷 今天也别忘了照顾自己。</span>
+      </div>
+      <div class="mood-brightening" id="moodBrightening" hidden>
+        🌤️ 今天好像比刚才更轻松了一点，真好。
+      </div>
+    </header>
+
+    <section class="sunshine-card glass-card">
+      <div class="sunshine-icon">🌸</div>
+      <div>
+        <h2>今日小太阳</h2>
+        <p id="dailyMessage"></p>
+      </div>
+    </section>
+
+    <section class="points-card glass-card">
+      <div class="points-top">
+        <div>
+          <h2 class="points-title">💖 已积累 Care Points</h2>
+          <p class="points-note">每顿按时吃饭 +10，每天喝水打卡 +2。</p>
+        </div>
+        <div class="points-number" id="pointsNumber">
+          <span id="pointsValue">0</span>
+          <small>Care Points</small>
+        </div>
+      </div>
+
+      <div class="reward-progress">
+        <div class="reward-progress-head">
+          <span>🎁 小惊喜</span>
+          <strong id="smallProgressLabel">0 / 100</strong>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-bar" id="pointsBar"></div>
+        </div>
+
+        <div class="reward-progress-head reward-progress-head-large">
+          <span>💝 大礼物</span>
+          <strong id="bigProgressLabel">0 / 300</strong>
+        </div>
+        <div class="progress-track progress-track-large" aria-hidden="true">
+          <div class="progress-bar progress-bar-large" id="bigPointsBar"></div>
+        </div>
+      </div>
+
+      <div class="points-actions">
+        <button class="redeem-button" id="pointsRedeemButton" type="button" hidden>
+          🎁 已解锁一个惊喜 · 100 分
+        </button>
+        <button class="redeem-button big-redeem-button" id="bigRewardButton" type="button" hidden>
+          💝 已解锁一个大礼物 · 300 分
+        </button>
+      </div>
+    </section>
+
+    <section class="mood-card glass-card">
+      <h2>🌷 今天的你，心情怎么样？</h2>
+      <p class="mood-hint">选一个最接近现在的心情就好</p>
+      <div class="mood-options" id="moodOptions">
+        <button class="mood-button" type="button" data-mood="happy" data-mood-label="开心">
+          <span>😊</span>
+          <small>很开心</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="good" data-mood-label="挺不错">
+          <span>🙂</span>
+          <small>挺不错</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="calm" data-mood-label="平静">
+          <span>😌</span>
+          <small>平静</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="tired" data-mood-label="有点累">
+          <span>🥺</span>
+          <small>有点累</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="down" data-mood-label="有点低落">
+          <span>😔</span>
+          <small>有点低落</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="stressed" data-mood-label="压力很大">
+          <span>😣</span>
+          <small>压力很大</small>
+        </button>
+        <button class="mood-button" type="button" data-mood="none" data-mood-label="今天不想记录">
+          <span>🌿</span>
+          <small>今天不想记录</small>
+        </button>
+      </div>
+      <p class="mood-result" id="moodResult">还没有选择今天的心情</p>
+      <p class="mood-companion" id="moodCompanion"></p>
+      <p class="mood-comparison" id="moodComparison"></p>
+    </section>
+
+    <section class="wellness-grid">
+      <article class="wellness-card glass-card">
+        <h2 class="wellness-title">💖 今日进度</h2>
+        <div class="progress-ring" id="mealProgressRing" style="--progress: 0">
+          <div class="progress-ring-inner">
+            <strong id="mealPercent">0%</strong>
+            <span>今天完成</span>
+          </div>
+        </div>
+        <p class="progress-message" id="progressMessage">先从一顿饭开始吧～</p>
+        <div class="meal-symbol-row">
+          <span>🍞 <b data-progress-symbol="breakfast">○</b></span>
+          <span>🍱 <b data-progress-symbol="lunch">○</b></span>
+          <span>🍜 <b data-progress-symbol="dinner">○</b></span>
+        </div>
+      </article>
+
+      <article class="wellness-card glass-card">
+        <h2 class="wellness-title">🎁 礼物盒</h2>
+        <button class="gift-box" id="giftBoxButton" type="button">
+          <span class="gift-sparkle" aria-hidden="true">✨</span>
+          <span class="gift-emoji">🎁</span>
+        </button>
+        <p class="gift-label" id="giftBoxLabel">0 / 100</p>
+        <p class="gift-hint" id="giftBoxHint">认真吃饭，礼物盒会亮起来</p>
+      </article>
+    </section>
+
+    <div class="today-complete" id="todayComplete" hidden>
+      🌸 今天有认真照顾自己，真棒！
+    </div>
+
+    <h2 class="section-title">🍚 今日吃饭打卡</h2>
+
+    <section class="meal-list">
+      <article class="meal-card glass-card" data-meal="breakfast">
+        <div class="meal-icon">🍞</div>
+        <div class="meal-info">
+          <h3 class="meal-title">早餐</h3>
+          <p class="meal-hint">给今天一个温柔的开始</p>
+        </div>
+        <button class="check-button" type="button" data-check-meal="breakfast">
+          💕 我已经按时吃啦
+        </button>
+      </article>
+
+      <article class="meal-card glass-card" data-meal="lunch">
+        <div class="meal-icon">🍱</div>
+        <div class="meal-info">
+          <h3 class="meal-title">午餐</h3>
+          <p class="meal-hint">吃饱了才有力气继续呀</p>
+        </div>
+        <button class="check-button" type="button" data-check-meal="lunch">
+          💕 我已经按时吃啦
+        </button>
+      </article>
+
+      <article class="meal-card glass-card" data-meal="dinner">
+        <div class="meal-icon">🍜</div>
+        <div class="meal-info">
+          <h3 class="meal-title">晚餐</h3>
+          <p class="meal-hint">晚上也要好好照顾自己</p>
+        </div>
+        <button class="check-button" type="button" data-check-meal="dinner">
+          💕 我已经按时吃啦
+        </button>
+      </article>
+    </section>
+
+    <section class="water-card glass-card">
+      <div class="water-icon">🥛</div>
+      <div class="water-info">
+        <h2>今天喝水了吗？</h2>
+        <p>每天饮水打卡一次，+2 Care Points</p>
+      </div>
+      <button class="water-button" id="waterButton" type="button">
+        💧 今天喝水啦
+      </button>
+    </section>
+
+    <section class="stats-card glass-card">
+      <h2>📊 我的成长</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-value" id="totalMeals">0</span>
+          <span class="stat-label">🌷 已认真照顾自己</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="totalEarned">0</span>
+          <span class="stat-label">累计获得积分</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="smallRedemptions">0</span>
+          <span class="stat-label">累计小惊喜</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="bigRedemptions">0</span>
+          <span class="stat-label">累计大礼物</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="share-entry glass-card">
+      <div>
+        <h2>❤️ 一键生成今日汇报</h2>
+        <p>把今天的照顾做成一张温柔的小卡片。</p>
+      </div>
+      <button class="share-card-button" id="generateShareCard" type="button">
+        📤 生成今日汇报
+      </button>
+    </section>
+
+    <section class="jax-footer glass-card">
+      <p>希望这个小网页，能提醒你照顾好自己。❤️</p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="modal" id="rewardModal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="rewardTitle">
+      <div class="modal-emoji">🎉</div>
+      <h2 id="rewardTitle">恭喜！</h2>
+      <p id="rewardDescription">你已经获得领取奖励的机会。</p>
+      <div class="modal-actions">
+        <button class="primary-button" id="redeemButton" type="button">
+          💝 找 Jax 领取惊喜
+        </button>
+        <button class="primary-button big-redeem-button" id="bigRedeemButton" type="button">
+          💝 找 Jax 领取大礼物
+        </button>
+        <button class="soft-button" id="laterButton" type="button">晚点再说</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="share-modal" id="shareModal" hidden>
+    <div class="share-preview-card">
+      <h2>今日汇报卡</h2>
+      <div class="share-canvas-wrap">
+        <canvas id="shareCanvas" width="1080" height="1920"></canvas>
+      </div>
+      <div class="share-actions">
+        <button class="primary-button" id="saveShareCard" type="button">💾 保存图片</button>
+        <button class="soft-button" id="shareShareCard" type="button">📱 分享给朋友</button>
+        <button class="soft-button" id="closeShareModal" type="button">关闭</button>
+      </div>
+      <p class="share-hint" id="shareHint">
+        图片只会在本地生成，保存或分享都由你决定。
+      </p>
+    </div>
+  </div>
+
+  <div class="celebration-layer" id="celebrationLayer" aria-hidden="true"></div>
+
+  <script>
+    const STORAGE_KEY = "nonno-care-checkin-v1";
+    const SOUND_KEY = "nonno-care-sound";
+    const mealKeys = ["breakfast", "lunch", "dinner"];
+    const moodLabels = {
+      happy: "很开心",
+      good: "挺不错",
+      calm: "平静",
+      tired: "有点累",
+      down: "有点低落",
+      stressed: "压力很大"
+    };
+
+    const moodFeedbackMessages = {
+      happy: [
+        "🌸 今天看起来心情很好，希望这份开心能一直陪着你。",
+        "💖 真替你开心，希望今天一直顺顺利利。",
+        "✨ 今天一定发生了不错的事情吧～"
+      ],
+      good: [
+        "🌷 今天状态不错，继续保持～",
+        "🍀 希望今天还有更多开心的小事。"
+      ],
+      calm: [
+        "☁️ 平平淡淡也是很舒服的一天。",
+        "🌼 愿今天一直保持这样的节奏。"
+      ],
+      tired: [
+        "❤️ 今天辛苦了，记得好好休息。",
+        "🌸 工作很重要，但身体更重要。",
+        "☁️ 给自己一点放松的时间吧。"
+      ],
+      down: [
+        "🌷 没关系，每个人都会有这样的日子。",
+        "❤️ 希望今天也能对自己温柔一点。",
+        "🍀 慢慢来，我相信一切都会越来越好。"
+      ],
+      stressed: [
+        "🤍 今天一定很辛苦吧。",
+        "🌸 不要给自己太大压力。",
+        "❤️ 希望今天至少能认真吃顿饭，好好照顾自己。",
+        "☁️ 有时候停下来休息，也是一种前进。"
+      ]
+    };
+
+    const moodScale = {
+      stressed: 1,
+      down: 2,
+      tired: 3,
+      calm: 4,
+      good: 5,
+      happy: 6
+    };
+
+    const improvedMoodMessages = [
+      "🌸 今天看起来比刚才开心一点，真替你高兴 ❤️",
+      "🍀 希望今天越来越顺利。",
+      "✨ 希望这样的好心情一直陪着你。",
+      "💖 看到你状态变好了，真的很开心。",
+      "🌼 今天一定会越来越好的。"
+    ];
+
+    const stableMoodMessages = [
+      "🍀 希望今天一直保持这样的状态。",
+      "🌸 今天也慢慢来。",
+      "☁️ 愿今天平静又舒服。"
+    ];
+
+    const softerMoodMessages = [
+      "❤️ 没关系，不开心的时候也请好好照顾自己。",
+      "🌷 今天不用勉强自己。",
+      "☁️ 希望今天至少能认真吃顿饭。",
+      "🤍 今天辛苦了。",
+      "🌸 给自己一点时间休息吧。"
+    ];
+
+    const dailyMessages = [
+      "🌸 今天辛苦啦。",
+      "❤️ 今天也要照顾好自己。",
+      "🍓 希望今天会发生一点开心的小事。",
+      "☁️ 不开心也没有关系。",
+      "🌷 慢慢来，一切都会越来越好。",
+      "✨ 今天也值得被温柔对待。",
+      "🌼 工作很重要，但身体更重要。",
+      "🍀 今天也希望你有好好吃饭。",
+      "💖 记得喝水呀～",
+      "今天也别忘了喝水 ❤️",
+      "工作再忙，也要吃饭。",
+      "身体比工作重要。",
+      "我希望你每天都健健康康。",
+      "慢慢来，照顾好自己最重要。",
+      "今天也要好好吃饭呀 ❤️",
+      "每一顿饭，都是给未来的自己充电。",
+      "你值得被好好照顾。",
+      "不用急，先吃一顿温暖的饭。",
+      "今天也要认真喜欢自己呀。",
+      "累了就歇一会儿，再慢慢吃饭。",
+      "照顾好自己，不是麻烦，是很重要的事。",
+      "哪怕只吃一点，也比一直饿着好。",
+      "小诺诺今天也要被温柔对待。",
+      "为自己认真吃一顿饭，很值得。",
+      "今天也要记得对自己好一点。",
+      "身体收到你的照顾，会悄悄感谢你。",
+      "先吃饭，其他事情可以慢一点。",
+      "愿今天的你，有热饭，也有好心情。",
+      "三餐规律一点点，生活就会稳一点点。",
+      "你不需要完美，只需要好好照顾自己。",
+      "今天的饭，也要吃得安心。",
+      "别忘了，你一直都很重要。",
+      "今天适合吃一点喜欢的食物。",
+      "好好吃饭，是今天最温柔的成就。",
+      "如果不知道先做什么，就先吃饭。",
+      "每一口水，都是给身体的温柔。",
+      "吃饱、喝足、慢一点，今天也很好。",
+      "认真生活，从照顾好胃开始。",
+      "Jax 希望你今天也平平安安、健健康康。",
+      "今天的天空也许很温柔，你也是。",
+      "不需要一下子变好，吃好这一顿就够了。",
+      "如果今天很忙，也给自己留一点吃饭时间。",
+      "饿的时候，不要一直忍着。",
+      "吃点热的，身体会慢慢暖起来。",
+      "今天愿意照顾自己，就已经很好了。",
+      "不好好吃饭也没关系，下一顿慢慢来。",
+      "喝一口水，也算今天很好的开始。",
+      "今天不用追赶谁，按自己的节奏就好。",
+      "把饭吃好，是给自己最简单的爱。",
+      "如果觉得累，就更要吃点东西。",
+      "你不需要向大家证明什么，先照顾自己。",
+      "今天也可以只完成一件小事。",
+      "愿你有胃口，也有好心情。",
+      "今天的你，也值得一餐温暖。",
+      "别急着否定自己，你已经很努力了。",
+      "如果心情不好，先喝口水、吃一点东西。",
+      "不必把每一天都过得完美。",
+      "我会一直希望你好好的。",
+      "今天不用表现得很坚强。",
+      "偶尔忘记也没关系，想起来就很好。",
+      "愿今天有喜欢的食物和放松的时刻。"
+    ];
+
+    const encouragementMessages = [
+      "🌸 今天也认真照顾自己啦～",
+      "❤️ 身体会谢谢现在的你。",
+      "🍀 今天又完成了一件照顾自己的小事。",
+      "🌷 每一顿饭都很重要。",
+      "✨ 好棒，继续保持。",
+      "💖 Jax 会因为你认真照顾自己而开心。",
+      "今天也有好好听身体的话呀。",
+      "这一顿吃好了，今天就多了一点能量。",
+      "慢慢吃，不着急。",
+      "谢谢你愿意对自己温柔一点。",
+      "这份照顾会被身体悄悄记住。",
+      "今天的你，也值得被夸一夸。",
+      "认真照顾自己，本身就是很温柔的事。",
+      "没关系，按自己的节奏来就好。",
+      "你已经做得很好啦。",
+      "给认真吃饭的你一个抱抱。",
+      "今天也是闪闪发光的一天。",
+      "这一顿饭，是给自己的小小礼物。",
+      "不需要满分，照顾到一点就很好。",
+      "你正在一点点学会爱自己。",
+      "今天也辛苦啦，吃好最重要。",
+      "慢慢来，每一口都算数。",
+      "身体收到你的照顾啦。",
+      "这一刻的你，很值得被喜欢。",
+      "好好吃饭，是很浪漫的自我照顾。",
+      "今天的爱心，送给认真生活的你。",
+      "有记得照顾自己，就特别棒。",
+      "吃一点喜欢的，也是在爱自己。",
+      "今天的饭，是今天的安心。",
+      "你不需要做到完美，只需要照顾好自己。",
+      "哪怕只吃一点，也是很好的开始。",
+      "照顾好胃，也照顾好心情。",
+      "今天的你也值得被温柔对待。",
+      "一点一点来，就已经很好了。",
+      "身体收到一份温暖啦。",
+      "谢谢你没有忘记自己。",
+      "今天也有认真生活呀。",
+      "吃得舒服，比吃得完美更重要。",
+      "你愿意照顾自己，这很珍贵。",
+      "今天的努力，未来的你会记得。",
+      "慢慢吃，今天的你辛苦了。",
+      "这一顿饭，是给未来的自己充电。",
+      "做好这件小事，也值得开心。",
+      "身体和心情都会慢慢变好的。",
+      "今天也要继续喜欢自己呀。",
+      "你认真的样子，很可爱。",
+      "让自己的胃暖起来，是很好的照顾。",
+      "不着急，吃好这一顿就够了。",
+      "今天的你，也被人希望好好的。",
+      "照顾好自己，就是今天最温柔的成就。"
+    ];
+
+    const todayKey = getDateKey(new Date());
+    const todayDate = document.getElementById("todayDate");
+    const todayStatus = document.getElementById("todayStatus");
+    const pointsValue = document.getElementById("pointsValue");
+    const pointsNumber = document.getElementById("pointsNumber");
+    const pointsBar = document.getElementById("pointsBar");
+    const bigPointsBar = document.getElementById("bigPointsBar");
+    const smallProgressLabel = document.getElementById("smallProgressLabel");
+    const bigProgressLabel = document.getElementById("bigProgressLabel");
+    const pointsRedeemButton = document.getElementById("pointsRedeemButton");
+    const bigRewardButton = document.getElementById("bigRewardButton");
+    const todayComplete = document.getElementById("todayComplete");
+    const mealProgressRing = document.getElementById("mealProgressRing");
+    const mealPercent = document.getElementById("mealPercent");
+    const progressMessage = document.getElementById("progressMessage");
+    const giftBoxButton = document.getElementById("giftBoxButton");
+    const giftBoxLabel = document.getElementById("giftBoxLabel");
+    const giftBoxHint = document.getElementById("giftBoxHint");
+    const waterButton = document.getElementById("waterButton");
+    const dailyMessage = document.getElementById("dailyMessage");
+    const moodResult = document.getElementById("moodResult");
+    const moodOptions = document.getElementById("moodOptions");
+    const moodCompanion = document.getElementById("moodCompanion");
+    const moodComparison = document.getElementById("moodComparison");
+    const moodBrightening = document.getElementById("moodBrightening");
+    const totalMeals = document.getElementById("totalMeals");
+    const totalEarned = document.getElementById("totalEarned");
+    const smallRedemptions = document.getElementById("smallRedemptions");
+    const bigRedemptions = document.getElementById("bigRedemptions");
+    const toast = document.getElementById("toast");
+    const rewardModal = document.getElementById("rewardModal");
+    const rewardDescription = document.getElementById("rewardDescription");
+    const redeemButton = document.getElementById("redeemButton");
+    const bigRedeemButton = document.getElementById("bigRedeemButton");
+    const generateShareCardButton = document.getElementById("generateShareCard");
+    const shareModal = document.getElementById("shareModal");
+    const shareCanvas = document.getElementById("shareCanvas");
+    const saveShareCardButton = document.getElementById("saveShareCard");
+    const shareShareCardButton = document.getElementById("shareShareCard");
+    const closeShareModalButton = document.getElementById("closeShareModal");
+    const shareHint = document.getElementById("shareHint");
+    const laterButton = document.getElementById("laterButton");
+    const soundToggle = document.getElementById("soundToggle");
+    const celebrationLayer = document.getElementById("celebrationLayer");
+
+    let state = loadState();
+    let toastTimer = null;
+    let lastEncouragement = "";
+    let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
+
+    todayDate.textContent = new Date().toLocaleDateString("zh-CN", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      weekday: "long"
+    });
+
+    dailyMessage.textContent = getDailyMessage();
+    updateSoundButton();
+    ensureMoodMessages();
+    updateInterface();
+
+    function getDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    function getDefaultState() {
+      return {
+        points: 0,
+        totalMeals: 0,
+        totalEarned: 0,
+        smallRedemptions: 0,
+        bigRedemptions: 0,
+        dailyMessages: {},
+        moodHistory: {},
+        daily: {}
+      };
+    }
+
+    function loadState() {
+      const base = getDefaultState();
+
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+        if (!stored || typeof stored !== "object") {
+          return base;
+        }
+
+        return {
+          points: Number(stored.points) || 0,
+          totalMeals: Number(stored.totalMeals) || 0,
+          totalEarned: Number(stored.totalEarned) || 0,
+          smallRedemptions: Number(
+            stored.smallRedemptions ?? stored.totalRedemptions
+          ) || 0,
+          bigRedemptions: Number(stored.bigRedemptions) || 0,
+          dailyMessages: stored.dailyMessages && typeof stored.dailyMessages === "object"
+            ? stored.dailyMessages
+            : {},
+          moodHistory: stored.moodHistory && typeof stored.moodHistory === "object"
+            ? stored.moodHistory
+            : {},
+          daily: stored.daily && typeof stored.daily === "object" ? stored.daily : {}
+        };
+      } catch (error) {
+        return base;
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getTodayState() {
+      if (!state.daily[todayKey]) {
+        state.daily[todayKey] = {
+          breakfast: false,
+          lunch: false,
+          dinner: false,
+          water: false,
+          mood: "",
+          moodFeedback: "",
+          moodComparison: "",
+          previousMood: "",
+          firstMood: "",
+          moodImprovedFromFirst: false,
+          earnedPoints: 0,
+          rewardUnlocked: ""
+        };
+      }
+
+      if (typeof state.daily[todayKey].water !== "boolean") {
+        state.daily[todayKey].water = false;
+      }
+
+      if (typeof state.daily[todayKey].mood !== "string") {
+        state.daily[todayKey].mood = "";
+      }
+
+      if (typeof state.daily[todayKey].moodFeedback !== "string") {
+        state.daily[todayKey].moodFeedback = "";
+      }
+
+      if (typeof state.daily[todayKey].moodComparison !== "string") {
+        state.daily[todayKey].moodComparison = "";
+      }
+
+      if (typeof state.daily[todayKey].previousMood !== "string") {
+        state.daily[todayKey].previousMood = "";
+      }
+
+      if (typeof state.daily[todayKey].firstMood !== "string") {
+        state.daily[todayKey].firstMood = "";
+      }
+
+      if (typeof state.daily[todayKey].moodImprovedFromFirst !== "boolean") {
+        state.daily[todayKey].moodImprovedFromFirst = false;
+      }
+
+      if (typeof state.daily[todayKey].earnedPoints !== "number") {
+        state.daily[todayKey].earnedPoints = mealKeys.reduce(function (total, key) {
+          return total + (state.daily[todayKey][key] ? 10 : 0);
+        }, state.daily[todayKey].water ? 2 : 0);
+      }
+
+      if (typeof state.daily[todayKey].rewardUnlocked !== "string") {
+        state.daily[todayKey].rewardUnlocked = "";
+      }
+
+      return state.daily[todayKey];
+    }
+
+    function getDailyMessage() {
+      if (!Number.isInteger(state.dailyMessages[todayKey])) {
+        state.dailyMessages[todayKey] = Math.floor(Math.random() * dailyMessages.length);
+        saveState();
+      }
+
+      return dailyMessages[state.dailyMessages[todayKey]];
+    }
+
+    function pickFrom(messages) {
+      return messages[Math.floor(Math.random() * messages.length)];
+    }
+
+    function buildMoodChangeComparison(previousMood, currentMood) {
+      if (
+        !previousMood ||
+        previousMood === "none" ||
+        currentMood === "none" ||
+        moodScale[currentMood] === undefined ||
+        moodScale[previousMood] === undefined
+      ) {
+        return "";
+      }
+
+      if (currentMood === previousMood) {
+        return pickFrom(stableMoodMessages);
+      }
+
+      if (moodScale[currentMood] > moodScale[previousMood]) {
+        return pickFrom(improvedMoodMessages);
+      }
+
+      return pickFrom(softerMoodMessages);
+    }
+
+    function updateMoodHistory(mood) {
+      state.moodHistory[todayKey] = mood;
+
+      const recentDates = Object.keys(state.moodHistory)
+        .sort()
+        .slice(-30);
+      const recentHistory = {};
+
+      recentDates.forEach(function (date) {
+        recentHistory[date] = state.moodHistory[date];
+      });
+
+      state.moodHistory = recentHistory;
+    }
+
+    function ensureMoodMessages() {
+      const today = getTodayState();
+
+      if (!today.mood || today.mood === "none") {
+        return;
+      }
+
+      if (!today.moodFeedback) {
+        today.moodFeedback = pickFrom(moodFeedbackMessages[today.mood] || []);
+      }
+
+      if (!today.moodComparison && today.previousMood) {
+        today.moodComparison = buildMoodChangeComparison(
+          today.previousMood,
+          today.mood
+        );
+      }
+
+      saveState();
+    }
+
+    function pickRandom(messages) {
+      let message = messages[Math.floor(Math.random() * messages.length)];
+
+      if (messages.length > 1) {
+        while (message === lastEncouragement) {
+          message = messages[Math.floor(Math.random() * messages.length)];
+        }
+      }
+
+      lastEncouragement = message;
+      return message;
+    }
+
+    function updateInterface() {
+      const today = getTodayState();
+      const completedCount = mealKeys.filter(function (key) {
+        return today[key];
+      }).length;
+      const progressPercent = Math.round(completedCount / mealKeys.length * 100);
+      const giftReady = state.points >= 100;
+      const bigGiftReady = state.points >= 300;
+
+      pointsValue.textContent = String(state.points);
+      pointsBar.style.width = Math.min(100, state.points) + "%";
+      bigPointsBar.style.width = Math.min(300, state.points) / 3 + "%";
+      smallProgressLabel.textContent = Math.min(100, state.points) + " / 100";
+      bigProgressLabel.textContent = Math.min(300, state.points) + " / 300";
+      pointsRedeemButton.hidden = state.points < 100;
+      bigRewardButton.hidden = state.points < 300;
+      todayComplete.hidden = completedCount < 3;
+
+      if (completedCount >= 3) {
+        todayStatus.textContent = "今天真的超级棒 ❤️";
+      } else if (completedCount === 2) {
+        todayStatus.textContent = "已经很棒啦，再认真吃一顿今天就圆满啦 ✨";
+      } else if (completedCount === 1) {
+        todayStatus.textContent = "今天已经照顾自己一次啦 🌷";
+      } else if (today.mood && today.mood !== "none") {
+        todayStatus.textContent = "今天有好好听自己的心情，也要记得吃饭呀 🌷";
+      } else if (today.mood === "none") {
+        todayStatus.textContent = "🍀 下一顿开始也很好。";
+      } else if (today.water) {
+        todayStatus.textContent = "喝过水啦，也别忘了好好吃饭哦 🌷";
+      } else {
+        todayStatus.textContent = "🌷 今天还有时间照顾自己。";
+      }
+
+      const moodSkipped = today.mood === "none";
+      moodOptions.hidden = false;
+
+      document.querySelectorAll("[data-mood]").forEach(function (button) {
+        const selected = button.dataset.mood === today.mood;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+
+      moodResult.textContent = moodSkipped
+        ? "今天可以先不记录，想改的时候随时可以 🌿"
+        : today.mood
+          ? "今天的你：" + moodLabels[today.mood] + " 🌷"
+          : "还没有选择今天的心情";
+
+      moodCompanion.textContent = moodSkipped ? "" : today.moodFeedback || "";
+      moodComparison.textContent = moodSkipped ? "" : today.moodComparison || "";
+      moodCompanion.hidden = !moodCompanion.textContent;
+      moodComparison.hidden = !moodComparison.textContent;
+      moodBrightening.hidden = moodSkipped || !today.moodImprovedFromFirst;
+
+      mealProgressRing.style.setProperty("--progress", progressPercent);
+      mealPercent.textContent = progressPercent + "%";
+      progressMessage.textContent = progressPercent === 100
+        ? "🎉 今天超级棒！"
+        : completedCount === 0
+          ? "先从一顿饭开始吧～"
+          : "继续慢慢照顾自己～";
+
+      document.querySelectorAll("[data-progress-symbol]").forEach(function (symbol) {
+        symbol.textContent = today[symbol.dataset.progressSymbol] ? "✔" : "○";
+      });
+
+      giftBoxButton.classList.toggle("ready", giftReady);
+      giftBoxButton.classList.toggle("big-ready", bigGiftReady);
+      giftBoxButton.setAttribute(
+        "aria-label",
+        giftReady ? "打开礼物盒领取奖励" : "积分还没有达到 100"
+      );
+      giftBoxLabel.textContent = bigGiftReady
+        ? state.points + " · 大礼物可领取"
+        : giftReady
+          ? state.points + " · 小惊喜可领取"
+          : Math.min(state.points, 100) + " / 100";
+      giftBoxHint.textContent = giftReady
+        ? "点一下礼物盒，看看有什么惊喜"
+        : "认真吃饭，礼物盒会亮起来";
+
+      waterButton.disabled = false;
+      waterButton.classList.toggle("completed", today.water);
+      waterButton.setAttribute("aria-pressed", today.water ? "true" : "false");
+      waterButton.textContent = today.water
+        ? "✔ 今天喝水啦"
+        : "💧 今天喝水啦";
+
+      totalMeals.textContent = String(state.totalMeals);
+      totalEarned.textContent = String(state.totalEarned);
+      smallRedemptions.textContent = String(state.smallRedemptions);
+      bigRedemptions.textContent = String(state.bigRedemptions);
+
+      document.querySelectorAll("[data-meal]").forEach(function (card) {
+        const key = card.dataset.meal;
+        const completed = Boolean(today[key]);
+        const button = card.querySelector("[data-check-meal]");
+
+        card.classList.toggle("completed", completed);
+        button.classList.toggle("completed", completed);
+        button.disabled = false;
+        button.setAttribute("aria-pressed", completed ? "true" : "false");
+        button.textContent = completed ? "✔ 已完成" : "💕 我已经按时吃啦";
+      });
+    }
+
+    function syncRewardUnlock(today) {
+      if (today.rewardUnlocked === "small" && state.points < 100) {
+        today.rewardUnlocked = "";
+      }
+
+      if (today.rewardUnlocked === "big" && state.points < 300) {
+        today.rewardUnlocked = "";
+      }
+    }
+
+    function checkMeal(key, button) {
+      const today = getTodayState();
+
+      if (today[key]) {
+        const pointsBefore = state.points;
+
+        today[key] = false;
+        today.earnedPoints = Math.max(0, today.earnedPoints - 10);
+        state.points = Math.max(0, state.points - 10);
+        state.totalMeals = Math.max(0, state.totalMeals - 1);
+        state.totalEarned = Math.max(0, state.totalEarned - 10);
+        syncRewardUnlock(today);
+        saveState();
+        updateInterface();
+        animatePoints(pointsBefore, state.points);
+
+        button.classList.remove("pop");
+        void button.offsetWidth;
+        button.classList.add("pop");
+        showToast("🌷 已恢复，可以重新记录。");
+        return;
+      }
+
+      const pointsBefore = state.points;
+      today[key] = true;
+      state.points += 10;
+      today.earnedPoints += 10;
+      state.totalMeals += 1;
+      state.totalEarned += 10;
+
+      if (pointsBefore < 300 && state.points >= 300) {
+        today.rewardUnlocked = "big";
+      } else if (pointsBefore < 100 && state.points >= 100) {
+        today.rewardUnlocked = "small";
+      }
+
+      saveState();
+      updateInterface();
+      animatePoints(pointsBefore, state.points);
+
+      button.classList.remove("pop");
+      void button.offsetWidth;
+      button.classList.add("pop");
+      pointsNumber.classList.remove("bump");
+      void pointsNumber.offsetWidth;
+      pointsNumber.classList.add("bump");
+
+      spawnHearts(button);
+      playChime();
+      showToast(pickRandom(encouragementMessages));
+
+      const allComplete = mealKeys.every(function (mealKey) {
+        return today[mealKey];
+      });
+
+      if (allComplete) {
+        setTimeout(function () {
+          launchConfetti(28);
+        }, 280);
+      }
+
+      if (state.points >= 100) {
+        setTimeout(openRewardModal, 820);
+      }
+    }
+
+    function checkWater() {
+      const today = getTodayState();
+
+      if (today.water) {
+        const pointsBefore = state.points;
+
+        today.water = false;
+        today.earnedPoints = Math.max(0, today.earnedPoints - 2);
+        state.points = Math.max(0, state.points - 2);
+        state.totalEarned = Math.max(0, state.totalEarned - 2);
+        syncRewardUnlock(today);
+        saveState();
+        updateInterface();
+        animatePoints(pointsBefore, state.points);
+        showToast("🌷 已恢复，可以重新记录。");
+        return;
+      }
+
+      const pointsBefore = state.points;
+      today.water = true;
+      state.points += 2;
+      today.earnedPoints += 2;
+      state.totalEarned += 2;
+
+      if (pointsBefore < 300 && state.points >= 300) {
+        today.rewardUnlocked = "big";
+      } else if (pointsBefore < 100 && state.points >= 100) {
+        today.rewardUnlocked = "small";
+      }
+
+      saveState();
+      updateInterface();
+      animatePoints(pointsBefore, state.points);
+
+      pointsNumber.classList.remove("bump");
+      void pointsNumber.offsetWidth;
+      pointsNumber.classList.add("bump");
+
+      spawnHearts(waterButton);
+      playChime();
+      showToast("喝水的你也超棒～ +2 Care Points 💧");
+
+      if (state.points >= 100) {
+        setTimeout(openRewardModal, 820);
+      }
+    }
+
+    function setMood(key, label) {
+      const today = getTodayState();
+      const previousMood = today.mood && today.mood !== "none" ? today.mood : "";
+      today.mood = key;
+
+      if (key === "none") {
+        today.moodFeedback = "";
+        today.moodComparison = "";
+        today.previousMood = previousMood;
+        today.moodImprovedFromFirst = false;
+        updateMoodHistory("none");
+        saveState();
+        updateInterface();
+        return;
+      }
+
+      if (!today.firstMood) {
+        today.firstMood = key;
+      }
+
+      today.previousMood = previousMood;
+      today.moodFeedback = pickFrom(moodFeedbackMessages[key] || []);
+      today.moodComparison = previousMood
+        ? buildMoodChangeComparison(previousMood, key)
+        : "";
+      today.moodImprovedFromFirst = Boolean(
+        today.firstMood &&
+        moodScale[key] > moodScale[today.firstMood]
+      );
+      updateMoodHistory(key);
+      saveState();
+      updateInterface();
+      playChime();
+      showToast(
+        today.moodFeedback + (today.moodComparison ? " " + today.moodComparison : "")
+      );
+    }
+
+    function spawnHearts(element) {
+      const rect = element.getBoundingClientRect();
+      const symbols = ["💗", "✨", "🌟", "💕"];
+
+      for (let index = 0; index < 9; index++) {
+        const heart = document.createElement("span");
+        heart.className = "floating-heart";
+        heart.textContent = symbols[index % symbols.length];
+        heart.style.left = rect.left + rect.width * (0.16 + Math.random() * 0.68) + "px";
+        heart.style.top = rect.top + rect.height * 0.45 + "px";
+        heart.style.setProperty("--size", 15 + Math.random() * 12 + "px");
+        heart.style.setProperty("--drift", -40 + Math.random() * 80 + "px");
+        heart.style.setProperty("--rotation", -28 + Math.random() * 56 + "deg");
+        heart.style.animationDelay = index * 0.035 + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(function () {
+          heart.remove();
+        }, 1500);
+      }
+    }
+
+    function launchConfetti(count) {
+      const symbols = ["✦", "♥", "●", "✿"];
+      const colors = ["#e95b9e", "#ffd86b", "#72c8aa", "#a88beb", "#ffffff"];
+
+      for (let index = 0; index < count; index++) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.textContent = symbols[index % symbols.length];
+        piece.style.left = Math.random() * 100 + "%";
+        piece.style.color = colors[index % colors.length];
+        piece.style.setProperty("--size", 12 + Math.random() * 14 + "px");
+        piece.style.setProperty("--drift", -65 + Math.random() * 130 + "px");
+        piece.style.setProperty("--duration", 1.5 + Math.random() * 1.25 + "s");
+        piece.style.animationDelay = Math.random() * 0.28 + "s";
+        celebrationLayer.appendChild(piece);
+
+        setTimeout(function () {
+          piece.remove();
+        }, 3400);
+      }
+    }
+
+    function showToast(text) {
+      clearTimeout(toastTimer);
+      toast.textContent = text;
+      toast.classList.add("show");
+      toastTimer = setTimeout(function () {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    function openRewardModal() {
+      if (state.points < 100) {
+        return;
+      }
+
+      const canGetSmall = state.points >= 100;
+      const canGetBig = state.points >= 300;
+
+      redeemButton.hidden = !canGetSmall;
+      bigRedeemButton.hidden = !canGetBig;
+
+      if (canGetBig) {
+        rewardDescription.textContent = "你已经可以领取小惊喜，也可以直接领取 300 分大礼物。";
+      } else {
+        rewardDescription.textContent = "你已经获得一次领取小惊喜的机会，Jax 会收到你的惊喜申请。";
+      }
+
+      rewardModal.hidden = false;
+      (canGetBig ? bigRedeemButton : redeemButton).focus();
+    }
+
+    function closeRewardModal() {
+      rewardModal.hidden = true;
+    }
+
+    function redeemReward(cost, type) {
+      if (state.points < cost) {
+        closeRewardModal();
+        return;
+      }
+
+      const rewardName = type === "big" ? "大礼物" : "小惊喜";
+      const confirmed = confirm("确定领取一次" + rewardName + "吗？");
+
+      if (!confirmed) {
+        return;
+      }
+
+      state.points -= cost;
+
+      if (type === "big") {
+        state.bigRedemptions += 1;
+      } else {
+        state.smallRedemptions += 1;
+      }
+
+      syncRewardUnlock(getTodayState());
+      saveState();
+      updateInterface();
+      closeRewardModal();
+      launchConfetti(44);
+      playChime();
+      showToast("✨ 已获得" + rewardName + "领取资格 ✨ ❤️ Jax 已收到惊喜申请～");
+    }
+
+    function playChime() {
+      if (!soundEnabled) {
+        return;
+      }
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+
+      if (!AudioContextClass) {
+        return;
+      }
+
+      const context = new AudioContextClass();
+      const gain = context.createGain();
+      const oscillator = context.createOscillator();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(659.25, context.currentTime);
+      oscillator.frequency.setValueAtTime(783.99, context.currentTime + 0.11);
+      gain.gain.setValueAtTime(0.0001, context.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.055, context.currentTime + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.36);
+
+      oscillator.connect(gain);
+      gain.connect(context.destination);
+      oscillator.start();
+      oscillator.stop(context.currentTime + 0.38);
+      oscillator.addEventListener("ended", function () {
+        context.close();
+      });
+    }
+
+    function updateSoundButton() {
+      soundToggle.textContent = soundEnabled ? "🔔 音效开" : "🔕 音效关";
+    }
+
+    function animatePoints(from, to) {
+      const duration = 420;
+      const startedAt = performance.now();
+
+      function updateNumber(now) {
+        const progress = Math.min(1, (now - startedAt) / duration);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        pointsValue.textContent = String(Math.round(from + (to - from) * eased));
+
+        if (progress < 1) {
+          requestAnimationFrame(updateNumber);
+        } else {
+          pointsValue.textContent = String(to);
+        }
+      }
+
+      requestAnimationFrame(updateNumber);
+    }
+
+    function roundedRectPath(context, x, y, width, height, radius) {
+      const safeRadius = Math.min(radius, width / 2, height / 2);
+
+      context.beginPath();
+      context.moveTo(x + safeRadius, y);
+      context.arcTo(x + width, y, x + width, y + height, safeRadius);
+      context.arcTo(x + width, y + height, x, y + height, safeRadius);
+      context.arcTo(x, y + height, x, y, safeRadius);
+      context.arcTo(x, y, x + width, y, safeRadius);
+      context.closePath();
+    }
+
+    function fillRoundedRect(context, x, y, width, height, radius, fill, stroke) {
+      roundedRectPath(context, x, y, width, height, radius);
+      context.fillStyle = fill;
+      context.fill();
+
+      if (stroke) {
+        context.strokeStyle = stroke;
+        context.lineWidth = 2;
+        context.stroke();
+      }
+    }
+
+    function drawCloud(context, x, y, scale, color) {
+      context.save();
+      context.translate(x, y);
+      context.scale(scale, scale);
+      context.beginPath();
+      context.arc(0, 20, 32, Math.PI, 0);
+      context.arc(30, 0, 38, Math.PI, 0);
+      context.arc(72, 18, 30, Math.PI, 0);
+      context.lineTo(72, 48);
+      context.lineTo(0, 48);
+      context.closePath();
+      context.fillStyle = color;
+      context.fill();
+      context.restore();
+    }
+
+    function drawStar(context, x, y, scale, color) {
+      context.save();
+      context.translate(x, y);
+      context.scale(scale, scale);
+      context.beginPath();
+
+      for (let point = 0; point < 10; point++) {
+        const radius = point % 2 === 0 ? 42 : 18;
+        const angle = -Math.PI / 2 + point * Math.PI / 5;
+        const pointX = Math.cos(angle) * radius;
+        const pointY = Math.sin(angle) * radius;
+
+        if (point === 0) {
+          context.moveTo(pointX, pointY);
+        } else {
+          context.lineTo(pointX, pointY);
+        }
+      }
+
+      context.closePath();
+      context.fillStyle = color;
+      context.fill();
+      context.restore();
+    }
+
+    function drawFlower(context, x, y, scale, color) {
+      context.save();
+      context.translate(x, y);
+      context.scale(scale, scale);
+      context.fillStyle = color;
+
+      for (let petal = 0; petal < 5; petal++) {
+        const angle = petal * Math.PI * 2 / 5;
+        context.beginPath();
+        context.ellipse(
+          Math.cos(angle) * 28,
+          Math.sin(angle) * 28,
+          24,
+          16,
+          angle,
+          0,
+          Math.PI * 2
+        );
+        context.fill();
+      }
+
+      context.beginPath();
+      context.arc(0, 0, 16, 0, Math.PI * 2);
+      context.fillStyle = "#f3d99b";
+      context.fill();
+      context.restore();
+    }
+
+    function drawStrawberry(context, x, y, scale, color) {
+      context.save();
+      context.translate(x, y);
+      context.scale(scale, scale);
+      context.beginPath();
+      context.moveTo(0, 78);
+      context.bezierCurveTo(-58, 32, -46, -20, 0, -18);
+      context.bezierCurveTo(46, -20, 58, 32, 0, 78);
+      context.closePath();
+      context.fillStyle = color;
+      context.fill();
+
+      context.fillStyle = "#a8c3b0";
+      context.beginPath();
+      context.moveTo(0, -18);
+      context.lineTo(-28, -42);
+      context.lineTo(-10, -42);
+      context.lineTo(0, -62);
+      context.lineTo(12, -42);
+      context.lineTo(30, -42);
+      context.closePath();
+      context.fill();
+      context.restore();
+    }
+
+    function drawWrappedText(context, text, x, y, maxWidth, lineHeight, maxLines) {
+      const characters = Array.from(text);
+      const lines = [];
+      let currentLine = "";
+
+      characters.forEach(function (character) {
+        const testLine = currentLine + character;
+
+        if (context.measureText(testLine).width > maxWidth && currentLine) {
+          lines.push(currentLine);
+          currentLine = character;
+        } else {
+          currentLine = testLine;
+        }
+      });
+
+      if (currentLine) {
+        lines.push(currentLine);
+      }
+
+      lines.slice(0, maxLines).forEach(function (line, index) {
+        context.fillText(line, x, y + index * lineHeight);
+      });
+    }
+
+    function getShareMood() {
+      const today = getTodayState();
+      const moodEmoji = {
+        happy: "😊",
+        good: "🙂",
+        calm: "😌",
+        tired: "🥺",
+        down: "😔",
+        stressed: "😣"
+      };
+
+      if (!today.mood || today.mood === "none") {
+        return "🌿 今天没有记录";
+      }
+
+      return moodEmoji[today.mood] + " " + moodLabels[today.mood];
+    }
+
+    function getShareStatusMessage(completedCount) {
+      if (completedCount >= 3) {
+        return "🌸 今天有认真照顾自己，真棒。";
+      }
+
+      if (completedCount === 2) {
+        return "🌷 今天已经照顾自己两次啦，慢慢来就很好。";
+      }
+
+      if (completedCount === 1) {
+        return "🌷 今天已经照顾自己一次啦，下一顿也别忘记哦。";
+      }
+
+      return "❤️ 今天也没关系，明天依然是新的开始。";
+    }
+
+    function renderShareCard() {
+      const context = shareCanvas.getContext("2d");
+      const today = getTodayState();
+      const completedCount = mealKeys.filter(function (key) {
+        return today[key];
+      }).length;
+      const mealLabels = {
+        breakfast: "早餐",
+        lunch: "午餐",
+        dinner: "晚餐"
+      };
+      const mealIcons = {
+        breakfast: "🍞",
+        lunch: "🍱",
+        dinner: "🍜"
+      };
+      const dateText = new Date().toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+
+      context.clearRect(0, 0, shareCanvas.width, shareCanvas.height);
+      context.fillStyle = "#fbf8f4";
+      context.fillRect(0, 0, shareCanvas.width, shareCanvas.height);
+
+      drawCloud(context, 118, 126, 1.2, "rgba(190, 216, 227, 0.34)");
+      drawStar(context, 948, 120, 0.95, "rgba(241, 218, 151, 0.54)");
+      drawStrawberry(context, 122, 1776, 0.82, "rgba(222, 151, 165, 0.42)");
+      drawFlower(context, 956, 1788, 0.82, "rgba(232, 183, 199, 0.42)");
+
+      fillRoundedRect(
+        context,
+        54,
+        54,
+        972,
+        1812,
+        52,
+        "rgba(255, 253, 250, 0.96)",
+        "#eaded7"
+      );
+
+      context.textAlign = "center";
+      context.fillStyle = "#a96580";
+      context.font = '600 48px "STKaiti", "KaiTi", "Microsoft YaHei", sans-serif';
+      context.fillText("诺诺今天好好照顾自己了吗？", 540, 150);
+
+      context.fillStyle = "#95847c";
+      context.font = '400 30px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText(dateText, 540, 208);
+
+      fillRoundedRect(context, 108, 270, 864, 470, 34, "#fffaf6", "#eee2dc");
+
+      context.textAlign = "left";
+      context.fillStyle = "#795f68";
+      context.font = '700 33px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("🍚 今日吃饭", 150, 330);
+
+      mealKeys.forEach(function (key, index) {
+        const rowY = 370 + index * 112;
+        const eaten = Boolean(today[key]);
+
+        fillRoundedRect(
+          context,
+          140,
+          rowY,
+          800,
+          88,
+          26,
+          eaten ? "#f2f7f3" : "#fbf6f2",
+          eaten ? "#dce9e0" : "#eee2dc"
+        );
+
+        context.fillStyle = "#5e514c";
+        context.font = '600 29px "Microsoft YaHei", "PingFang SC", sans-serif';
+        context.fillText(mealIcons[key] + " " + mealLabels[key], 175, rowY + 56);
+
+        context.textAlign = "right";
+        context.fillStyle = eaten ? "#6f927e" : "#a3938c";
+        context.font = '600 27px "Microsoft YaHei", "PingFang SC", sans-serif';
+        context.fillText(
+          eaten ? "✔ 已认真吃饭" : "○ 还没有",
+          905,
+          rowY + 56
+        );
+        context.textAlign = "left";
+      });
+
+      fillRoundedRect(
+        context,
+        108,
+        770,
+        864,
+        104,
+        30,
+        today.water ? "#eff6fa" : "#fbf6f2",
+        today.water ? "#d8e9f1" : "#eee2dc"
+      );
+      context.fillStyle = "#617b89";
+      context.font = '600 29px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText(
+        today.water ? "💧 今天喝水啦 ✔" : "💧 今天还没记录",
+        150,
+        834
+      );
+
+      fillRoundedRect(context, 108, 904, 864, 104, 30, "#fdf6f8", "#eee0e4");
+      context.fillStyle = "#8d6876";
+      context.font = '600 29px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("😊 今日心情  " + getShareMood(), 150, 968);
+
+      fillRoundedRect(context, 108, 1038, 864, 228, 34, "#fff8f2", "#eee0d8");
+      context.fillStyle = "#795f68";
+      context.font = '700 33px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("💖 Care Points", 150, 1098);
+
+      context.fillStyle = "#9f687d";
+      context.font = '700 34px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("今日获得：+" + (today.earnedPoints || 0) + " Care Points", 150, 1158);
+
+      context.fillStyle = "#7c6a63";
+      context.font = '500 29px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("累计：" + state.points + " Care Points", 150, 1210);
+
+      if (today.rewardUnlocked) {
+        context.fillStyle = "#a67c91";
+        context.font = '600 25px "Microsoft YaHei", "PingFang SC", sans-serif';
+        context.fillText(
+          today.rewardUnlocked === "big"
+            ? "🎁 今天解锁了一个大礼物！"
+            : "🎁 今天解锁了一个惊喜！",
+          150,
+          1250
+        );
+      }
+
+      fillRoundedRect(context, 108, 1298, 864, 270, 34, "#f8f6f2", "#e9e1dc");
+      context.fillStyle = "#795f68";
+      context.font = '700 33px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("🌷 今日留言", 150, 1358);
+      context.fillStyle = "#8b7b74";
+      context.font = '400 27px "Microsoft YaHei", "PingFang SC", sans-serif';
+      drawWrappedText(context, getDailyMessage(), 150, 1410, 770, 42, 3);
+
+      context.textAlign = "center";
+      context.fillStyle = "#9a6679";
+      context.font = '600 29px "Microsoft YaHei", "PingFang SC", sans-serif';
+      drawWrappedText(
+        context,
+        getShareStatusMessage(completedCount),
+        540,
+        1645,
+        760,
+        44,
+        2
+      );
+
+      context.fillStyle = "#a4938b";
+      context.font = '400 23px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("希望你每天都能好好照顾自己。", 540, 1808);
+    }
+
+    function canvasToPngBlob() {
+      return new Promise(function (resolve, reject) {
+        shareCanvas.toBlob(function (blob) {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error("图片生成没有完成"));
+          }
+        }, "image/png", 0.96);
+      });
+    }
+
+    async function saveShareCard() {
+      const blob = await canvasToPngBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = "诺诺今日汇报-" + todayKey + ".png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(function () {
+        URL.revokeObjectURL(url);
+      }, 1000);
+      shareHint.textContent = "图片已保存到你的设备。";
+    }
+
+    async function shareShareCard() {
+      if (
+        typeof File === "undefined" ||
+        !navigator.share ||
+        !navigator.canShare
+      ) {
+        shareHint.textContent = "这个浏览器不支持直接分享，请先保存图片后发送。";
+        return;
+      }
+
+      const blob = await canvasToPngBlob();
+      const file = new File(
+        [blob],
+        "诺诺今日汇报-" + todayKey + ".png",
+        { type: "image/png" }
+      );
+
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: "诺诺的今日汇报",
+            text: "这是我今天的照顾小卡片。",
+            files: [file]
+          });
+          shareHint.textContent = "分享面板已由你关闭或完成。";
+        } catch (error) {
+          if (error.name !== "AbortError") {
+            shareHint.textContent = "这次没有分享出去，你可以先保存图片。";
+          }
+        }
+        return;
+      }
+
+      shareHint.textContent = "这个浏览器不支持分享图片，请先保存图片后发送。";
+    }
+
+    document.querySelectorAll("[data-mood]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        setMood(button.dataset.mood, button.dataset.moodLabel);
+      });
+    });
+
+    document.querySelectorAll("[data-check-meal]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        checkMeal(button.dataset.checkMeal, button);
+      });
+    });
+
+    soundToggle.addEventListener("click", function () {
+      soundEnabled = !soundEnabled;
+      localStorage.setItem(SOUND_KEY, soundEnabled ? "on" : "off");
+      updateSoundButton();
+
+      if (soundEnabled) {
+        playChime();
+      }
+    });
+
+    giftBoxButton.addEventListener("click", function () {
+      if (state.points < 100) {
+        const needed = 100 - state.points;
+        showToast("再认真照顾自己一点点，还差 " + needed + " Care Points～");
+        return;
+      }
+
+      giftBoxButton.classList.remove("opening");
+      void giftBoxButton.offsetWidth;
+      giftBoxButton.classList.add("opening");
+
+      setTimeout(function () {
+        giftBoxButton.classList.remove("opening");
+        openRewardModal();
+      }, 430);
+    });
+
+    generateShareCardButton.addEventListener("click", function () {
+      renderShareCard();
+      shareHint.textContent = "图片只会在本地生成，保存或分享都由你决定。";
+      shareModal.hidden = false;
+      closeShareModalButton.focus();
+    });
+
+    saveShareCardButton.addEventListener("click", async function () {
+      try {
+        await saveShareCard();
+      } catch (error) {
+        shareHint.textContent = "图片保存没有完成，请稍后再试。";
+      }
+    });
+
+    shareShareCardButton.addEventListener("click", async function () {
+      try {
+        await shareShareCard();
+      } catch (error) {
+        shareHint.textContent = "分享没有完成，你可以先保存图片。";
+      }
+    });
+
+    closeShareModalButton.addEventListener("click", function () {
+      shareModal.hidden = true;
+    });
+
+    shareModal.addEventListener("click", function (event) {
+      if (event.target === shareModal) {
+        shareModal.hidden = true;
+      }
+    });
+
+    waterButton.addEventListener("click", checkWater);
+    pointsRedeemButton.addEventListener("click", openRewardModal);
+    bigRewardButton.addEventListener("click", openRewardModal);
+    redeemButton.addEventListener("click", function () {
+      redeemReward(100, "small");
+    });
+    bigRedeemButton.addEventListener("click", function () {
+      redeemReward(300, "big");
+    });
+    laterButton.addEventListener("click", closeRewardModal);
+
+    rewardModal.addEventListener("click", function (event) {
+      if (event.target === rewardModal) {
+        closeRewardModal();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && !rewardModal.hidden) {
+        closeRewardModal();
+      }
+
+      if (event.key === "Escape" && !shareModal.hidden) {
+        shareModal.hidden = true;
+      }
+    });
+
+    if (state.points >= 100) {
+      setTimeout(openRewardModal, 700);
+    }
+  </script>
+</body>
+</html>

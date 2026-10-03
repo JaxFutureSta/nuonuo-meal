@@ -474,6 +474,154 @@
       border-top: 1px solid rgba(215, 197, 190, 0.5);
     }
 
+    .mood-calendar-card {
+      margin-bottom: 16px;
+      padding: 19px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.58s 0.08s ease both;
+    }
+
+    .mood-calendar-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mood-calendar-head h2 {
+      margin: 0 0 3px;
+      color: #725a63;
+      font-size: 18px;
+    }
+
+    .mood-calendar-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mood-month-controls {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 6px;
+    }
+
+    .mood-month-button {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border: 1px solid #e8dcd5;
+      border-radius: 12px;
+      background: #fffaf6;
+      color: #8f6d7b;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      place-items: center;
+      transition: transform 0.16s ease, background 0.2s ease;
+    }
+
+    .mood-month-button:active {
+      transform: scale(0.93);
+    }
+
+    .mood-month-button:disabled {
+      opacity: 0.32;
+      cursor: default;
+    }
+
+    .mood-calendar-month {
+      margin-top: 17px;
+      color: #8f6878;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .mood-weekdays,
+    .mood-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .mood-weekdays {
+      gap: 6px;
+      margin: 13px 0 7px;
+      color: #a2938c;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .mood-calendar-grid {
+      gap: 6px;
+    }
+
+    .mood-day {
+      position: relative;
+      display: grid;
+      min-width: 0;
+      min-height: 48px;
+      padding: 6px 2px 5px;
+      border: 1px solid transparent;
+      border-radius: 15px;
+      background: #fffaf6;
+      color: #7d6b64;
+      cursor: pointer;
+      place-items: center;
+      transition: transform 0.16s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .mood-day:active {
+      transform: scale(0.94);
+    }
+
+    .mood-day.empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .mood-day.today {
+      border-color: #d8a7b8;
+    }
+
+    .mood-day.selected {
+      border-color: #c889a2;
+      background: #f6e5eb;
+      box-shadow: 0 7px 16px rgba(155, 104, 125, 0.1);
+    }
+
+    .mood-day-number {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .mood-day-marker {
+      margin-top: 3px;
+      font-size: 16px;
+      line-height: 1.15;
+    }
+
+    .mood-calendar-summary {
+      display: grid;
+      gap: 3px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(215, 197, 190, 0.5);
+      text-align: center;
+    }
+
+    .mood-calendar-summary span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mood-calendar-summary strong {
+      color: #96697b;
+      font-size: 14px;
+    }
+
     .wellness-grid {
       display: grid;
       gap: 13px;
@@ -772,6 +920,91 @@
 
     .water-button.completed {
       background: var(--green);
+    }
+
+    .habit-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 13px;
+      margin-top: 16px;
+    }
+
+    .habit-card {
+      min-width: 0;
+      padding: 18px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.55s 0.25s ease both;
+    }
+
+    .habit-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .habit-icon {
+      display: grid;
+      width: 43px;
+      height: 43px;
+      border-radius: 15px;
+      background: #fbf1e7;
+      font-size: 23px;
+      place-items: center;
+    }
+
+    .habit-card.workout .habit-icon {
+      background: #edf4f0;
+    }
+
+    .habit-header h2 {
+      margin: 0;
+      color: #725a63;
+      font-size: 17px;
+    }
+
+    .habit-header p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .habit-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .habit-input {
+      width: 100%;
+      min-width: 0;
+      padding: 11px 12px;
+      border: 1px solid #e6d9d2;
+      border-radius: 16px;
+      background: #fffaf6;
+      color: #66514a;
+      font: inherit;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .habit-input:focus {
+      border-color: #d8a7b8;
+      outline: 3px solid rgba(216, 167, 184, 0.2);
+    }
+
+    .habit-input::-webkit-outer-spin-button,
+    .habit-input::-webkit-inner-spin-button {
+      margin: 0;
+      appearance: none;
+    }
+
+    .habit-unit {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
     }
 
     .daily-note {
@@ -1240,6 +1473,10 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .habit-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .stats-grid {
         gap: 12px;
       }
@@ -1447,6 +1684,7 @@
     }
 
     .mood-card,
+    .mood-calendar-card,
     .wellness-card,
     .stats-card,
     .water-card,
@@ -1455,11 +1693,13 @@
       margin-bottom: 22px;
     }
 
-    .mood-card {
+    .mood-card,
+    .mood-calendar-card {
       padding: 21px;
     }
 
     .mood-card h2,
+    .mood-calendar-head h2,
     .wellness-title,
     .stats-card h2,
     .water-info h2,
@@ -1696,7 +1936,6 @@
       100% {
         transform: rotate(0deg);
       }
-      
       45% {
         transform: rotate(-2.5deg);
       }
@@ -1864,6 +2103,34 @@
       <p class="mood-comparison" id="moodComparison"></p>
     </section>
 
+    <section class="mood-calendar-card glass-card">
+      <div class="mood-calendar-head">
+        <div>
+          <h2>🗓️ 心情日历</h2>
+          <p>回看每天留下的心情</p>
+        </div>
+        <div class="mood-month-controls">
+          <button class="mood-month-button" id="moodPrevMonth" type="button" aria-label="上个月">‹</button>
+          <button class="mood-month-button" id="moodNextMonth" type="button" aria-label="下个月">›</button>
+        </div>
+      </div>
+      <div class="mood-calendar-month" id="moodCalendarMonth"></div>
+      <div class="mood-weekdays" aria-hidden="true">
+        <span>日</span>
+        <span>一</span>
+        <span>二</span>
+        <span>三</span>
+        <span>四</span>
+        <span>五</span>
+        <span>六</span>
+      </div>
+      <div class="mood-calendar-grid" id="moodCalendarGrid"></div>
+      <div class="mood-calendar-summary">
+        <span id="selectedMoodDate"></span>
+        <strong id="selectedMoodText"></strong>
+      </div>
+    </section>
+
     <section class="wellness-grid">
       <article class="wellness-card glass-card">
         <h2 class="wellness-title">💖 今日进度</h2>
@@ -1942,6 +2209,36 @@
       <button class="water-button" id="waterButton" type="button">
         💧 今天喝水啦
       </button>
+    </section>
+
+    <section class="habit-grid">
+      <article class="habit-card glass-card reading">
+        <div class="habit-header">
+          <div class="habit-icon">📚</div>
+          <div>
+            <h2>每日读书</h2>
+            <p>今天看了多久，自己填就好</p>
+          </div>
+        </div>
+        <div class="habit-input-row">
+          <input class="habit-input" id="readingMinutes" type="number" min="0" max="1440" step="1" inputmode="numeric" placeholder="0" aria-label="今天读书分钟数">
+          <span class="habit-unit">分钟</span>
+        </div>
+      </article>
+
+      <article class="habit-card glass-card workout">
+        <div class="habit-header">
+          <div class="habit-icon">🏃</div>
+          <div>
+            <h2>每日健身</h2>
+            <p>今天运动了多久，自己填就好</p>
+          </div>
+        </div>
+        <div class="habit-input-row">
+          <input class="habit-input" id="workoutMinutes" type="number" min="0" max="1440" step="1" inputmode="numeric" placeholder="0" aria-label="今天健身分钟数">
+          <span class="habit-unit">分钟</span>
+        </div>
+      </article>
     </section>
 
     <section class="stats-card glass-card">
@@ -2029,7 +2326,18 @@
       calm: "平静",
       tired: "有点累",
       down: "有点低落",
-      stressed: "压力很大"
+      stressed: "压力很大",
+      none: "今天不想记录"
+    };
+
+    const moodEmoji = {
+      happy: "😊",
+      good: "🙂",
+      calm: "😌",
+      tired: "🥺",
+      down: "😔",
+      stressed: "😣",
+      none: "🌿"
     };
 
     const moodFeedbackMessages = {
@@ -2231,12 +2539,20 @@
     const giftBoxLabel = document.getElementById("giftBoxLabel");
     const giftBoxHint = document.getElementById("giftBoxHint");
     const waterButton = document.getElementById("waterButton");
+    const readingMinutesInput = document.getElementById("readingMinutes");
+    const workoutMinutesInput = document.getElementById("workoutMinutes");
     const dailyMessage = document.getElementById("dailyMessage");
     const moodResult = document.getElementById("moodResult");
     const moodOptions = document.getElementById("moodOptions");
     const moodCompanion = document.getElementById("moodCompanion");
     const moodComparison = document.getElementById("moodComparison");
     const moodBrightening = document.getElementById("moodBrightening");
+    const moodPrevMonthButton = document.getElementById("moodPrevMonth");
+    const moodNextMonthButton = document.getElementById("moodNextMonth");
+    const moodCalendarMonth = document.getElementById("moodCalendarMonth");
+    const moodCalendarGrid = document.getElementById("moodCalendarGrid");
+    const selectedMoodDate = document.getElementById("selectedMoodDate");
+    const selectedMoodText = document.getElementById("selectedMoodText");
     const totalMeals = document.getElementById("totalMeals");
     const totalEarned = document.getElementById("totalEarned");
     const smallRedemptions = document.getElementById("smallRedemptions");
@@ -2261,6 +2577,8 @@
     let toastTimer = null;
     let lastEncouragement = "";
     let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
+    let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    let selectedCalendarDate = todayKey;
 
     todayDate.textContent = new Date().toLocaleDateString("zh-CN", {
       year: "numeric",
@@ -2271,6 +2589,7 @@
 
     dailyMessage.textContent = getDailyMessage();
     updateSoundButton();
+    syncMoodHistoryFromDaily();
     ensureMoodMessages();
     updateInterface();
 
@@ -2343,7 +2662,9 @@
           firstMood: "",
           moodImprovedFromFirst: false,
           earnedPoints: 0,
-          rewardUnlocked: ""
+          rewardUnlocked: "",
+          readingMinutes: 0,
+          workoutMinutes: 0
         };
       }
 
@@ -2383,6 +2704,20 @@
 
       if (typeof state.daily[todayKey].rewardUnlocked !== "string") {
         state.daily[todayKey].rewardUnlocked = "";
+      }
+
+      if (
+        typeof state.daily[todayKey].readingMinutes !== "number" ||
+        !Number.isFinite(state.daily[todayKey].readingMinutes)
+      ) {
+        state.daily[todayKey].readingMinutes = 0;
+      }
+
+      if (
+        typeof state.daily[todayKey].workoutMinutes !== "number" ||
+        !Number.isFinite(state.daily[todayKey].workoutMinutes)
+      ) {
+        state.daily[todayKey].workoutMinutes = 0;
       }
 
       return state.daily[todayKey];
@@ -2425,17 +2760,114 @@
 
     function updateMoodHistory(mood) {
       state.moodHistory[todayKey] = mood;
+    }
 
-      const recentDates = Object.keys(state.moodHistory)
-        .sort()
-        .slice(-30);
-      const recentHistory = {};
+    function syncMoodHistoryFromDaily() {
+      let changed = false;
 
-      recentDates.forEach(function (date) {
-        recentHistory[date] = state.moodHistory[date];
+      Object.keys(state.daily).forEach(function (date) {
+        const record = state.daily[date];
+
+        if (
+          record &&
+          typeof record.mood === "string" &&
+          record.mood &&
+          state.moodHistory[date] !== record.mood
+        ) {
+          state.moodHistory[date] = record.mood;
+          changed = true;
+        }
       });
 
-      state.moodHistory = recentHistory;
+      if (changed) {
+        saveState();
+      }
+    }
+
+    function getMoodForDate(dateKey) {
+      if (typeof state.moodHistory[dateKey] === "string") {
+        return state.moodHistory[dateKey];
+      }
+
+      const record = state.daily[dateKey];
+      return record && typeof record.mood === "string" ? record.mood : "";
+    }
+
+    function getMoodLabel(mood) {
+      if (!mood) {
+        return "这一天没有留下心情记录。";
+      }
+
+      if (mood === "none") {
+        return "🌿 这一天选择先不记录。";
+      }
+
+      return (moodEmoji[mood] || "🌸") + " " + (moodLabels[mood] || "心情");
+    }
+
+    function formatCalendarDate(dateKey) {
+      const parts = dateKey.split("-").map(Number);
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+      return date.toLocaleDateString("zh-CN", {
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      });
+    }
+
+    function renderMoodCalendar() {
+      const year = calendarMonth.getFullYear();
+      const month = calendarMonth.getMonth();
+      const firstWeekday = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const now = new Date();
+      const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+      moodCalendarMonth.textContent = year + "年" + (month + 1) + "月";
+      moodNextMonthButton.disabled = calendarMonth >= currentMonthStart;
+      moodCalendarGrid.replaceChildren();
+
+      for (let index = 0; index < firstWeekday; index++) {
+        const emptyDay = document.createElement("span");
+        emptyDay.className = "mood-day empty";
+        moodCalendarGrid.appendChild(emptyDay);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = getDateKey(new Date(year, month, day));
+        const mood = getMoodForDate(dateKey);
+        const button = document.createElement("button");
+        const number = document.createElement("span");
+        const marker = document.createElement("span");
+
+        button.type = "button";
+        button.className = "mood-day";
+        button.dataset.date = dateKey;
+        button.setAttribute(
+          "aria-label",
+          formatCalendarDate(dateKey) + "，" + getMoodLabel(mood)
+        );
+        button.classList.toggle("today", dateKey === todayKey);
+        button.classList.toggle("selected", dateKey === selectedCalendarDate);
+
+        number.className = "mood-day-number";
+        number.textContent = String(day);
+        marker.className = "mood-day-marker";
+        marker.textContent = mood ? moodEmoji[mood] || "🌸" : "·";
+
+        button.append(number, marker);
+        button.addEventListener("click", function () {
+          selectedCalendarDate = dateKey;
+          renderMoodCalendar();
+        });
+        moodCalendarGrid.appendChild(button);
+      }
+
+      selectedMoodDate.textContent = formatCalendarDate(selectedCalendarDate);
+      selectedMoodText.textContent = getMoodLabel(
+        getMoodForDate(selectedCalendarDate)
+      );
     }
 
     function ensureMoodMessages() {
@@ -2561,6 +2993,18 @@
         ? "✔ 今天喝水啦"
         : "💧 今天喝水啦";
 
+      if (document.activeElement !== readingMinutesInput) {
+        readingMinutesInput.value = today.readingMinutes
+          ? String(today.readingMinutes)
+          : "";
+      }
+
+      if (document.activeElement !== workoutMinutesInput) {
+        workoutMinutesInput.value = today.workoutMinutes
+          ? String(today.workoutMinutes)
+          : "";
+      }
+
       totalMeals.textContent = String(state.totalMeals);
       totalEarned.textContent = String(state.totalEarned);
       smallRedemptions.textContent = String(state.smallRedemptions);
@@ -2577,6 +3021,8 @@
         button.setAttribute("aria-pressed", completed ? "true" : "false");
         button.textContent = completed ? "✔ 已完成" : "💕 我已经按时吃啦";
       });
+
+      renderMoodCalendar();
     }
 
     function syncRewardUnlock(today) {
@@ -2586,6 +3032,35 @@
 
       if (today.rewardUnlocked === "big" && state.points < 300) {
         today.rewardUnlocked = "";
+      }
+    }
+
+    function readHabitMinutes(input) {
+      const minutes = Number.parseInt(input.value, 10);
+
+      if (!Number.isFinite(minutes)) {
+        return 0;
+      }
+
+      return Math.min(1440, Math.max(0, minutes));
+    }
+
+    function saveHabitMinutes(field, input, showFeedback) {
+      const today = getTodayState();
+      const minutes = readHabitMinutes(input);
+
+      if (today[field] === minutes) {
+        if (showFeedback) {
+          showToast("🌸 已帮你修改。");
+        }
+        return;
+      }
+
+      today[field] = minutes;
+      saveState();
+
+      if (showFeedback) {
+        showToast(minutes > 0 ? "💭 已更新～" : "🌷 已恢复，可以重新记录。");
       }
     }
 
@@ -3047,14 +3522,6 @@
 
     function getShareMood() {
       const today = getTodayState();
-      const moodEmoji = {
-        happy: "😊",
-        good: "🙂",
-        calm: "😌",
-        tired: "🥺",
-        down: "😔",
-        stressed: "😣"
-      };
 
       if (!today.mood || today.mood === "none") {
         return "🌿 今天没有记录";
@@ -3185,23 +3652,47 @@
         834
       );
 
-      fillRoundedRect(context, 108, 904, 864, 104, 30, "#fdf6f8", "#eee0e4");
+      fillRoundedRect(context, 108, 904, 420, 104, 30, "#fff8f2", "#eee0d8");
+      context.fillStyle = "#8f6d5d";
+      context.font = '600 24px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("📚 今日读书", 140, 942);
+      context.fillStyle = "#795f68";
+      context.font = '700 31px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText(
+        today.readingMinutes > 0 ? today.readingMinutes + " 分钟" : "未记录",
+        140,
+        985
+      );
+
+      fillRoundedRect(context, 552, 904, 420, 104, 30, "#f2f8f4", "#dfeae3");
+      context.fillStyle = "#688274";
+      context.font = '600 24px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText("🏃 今日健身", 584, 942);
+      context.fillStyle = "#617a6d";
+      context.font = '700 31px "Microsoft YaHei", "PingFang SC", sans-serif';
+      context.fillText(
+        today.workoutMinutes > 0 ? today.workoutMinutes + " 分钟" : "未记录",
+        584,
+        985
+      );
+
+      fillRoundedRect(context, 108, 1038, 864, 104, 30, "#fdf6f8", "#eee0e4");
       context.fillStyle = "#8d6876";
       context.font = '600 29px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("😊 今日心情  " + getShareMood(), 150, 968);
+      context.fillText("😊 今日心情  " + getShareMood(), 150, 1102);
 
-      fillRoundedRect(context, 108, 1038, 864, 228, 34, "#fff8f2", "#eee0d8");
+      fillRoundedRect(context, 108, 1172, 864, 228, 34, "#fff8f2", "#eee0d8");
       context.fillStyle = "#795f68";
       context.font = '700 33px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("💖 Care Points", 150, 1098);
+      context.fillText("💖 Care Points", 150, 1232);
 
       context.fillStyle = "#9f687d";
       context.font = '700 34px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("今日获得：+" + (today.earnedPoints || 0) + " Care Points", 150, 1158);
+      context.fillText("今日获得：+" + (today.earnedPoints || 0) + " Care Points", 150, 1292);
 
       context.fillStyle = "#7c6a63";
       context.font = '500 29px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("累计：" + state.points + " Care Points", 150, 1210);
+      context.fillText("累计：" + state.points + " Care Points", 150, 1344);
 
       if (today.rewardUnlocked) {
         context.fillStyle = "#a67c91";
@@ -3211,17 +3702,17 @@
             ? "🎁 今天解锁了一个大礼物！"
             : "🎁 今天解锁了一个惊喜！",
           150,
-          1250
+          1384
         );
       }
 
-      fillRoundedRect(context, 108, 1298, 864, 270, 34, "#f8f6f2", "#e9e1dc");
+      fillRoundedRect(context, 108, 1432, 864, 240, 34, "#f8f6f2", "#e9e1dc");
       context.fillStyle = "#795f68";
       context.font = '700 33px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("🌷 今日留言", 150, 1358);
+      context.fillText("🌷 今日留言", 150, 1492);
       context.fillStyle = "#8b7b74";
       context.font = '400 27px "Microsoft YaHei", "PingFang SC", sans-serif';
-      drawWrappedText(context, getDailyMessage(), 150, 1410, 770, 42, 3);
+      drawWrappedText(context, getDailyMessage(), 150, 1544, 770, 42, 3);
 
       context.textAlign = "center";
       context.fillStyle = "#9a6679";
@@ -3230,7 +3721,7 @@
         context,
         getShareStatusMessage(completedCount),
         540,
-        1645,
+        1725,
         760,
         44,
         2
@@ -3238,7 +3729,7 @@
 
       context.fillStyle = "#a4938b";
       context.font = '400 23px "Microsoft YaHei", "PingFang SC", sans-serif';
-      context.fillText("希望你每天都能好好照顾自己。", 540, 1808);
+      context.fillText("希望你每天都能好好照顾自己。", 540, 1840);
     }
 
     function canvasToPngBlob() {
@@ -3375,6 +3866,60 @@
       if (event.target === shareModal) {
         shareModal.hidden = true;
       }
+    });
+
+    moodPrevMonthButton.addEventListener("click", function () {
+      calendarMonth = new Date(
+        calendarMonth.getFullYear(),
+        calendarMonth.getMonth() - 1,
+        1
+      );
+      selectedCalendarDate = getDateKey(calendarMonth);
+      renderMoodCalendar();
+    });
+
+    moodNextMonthButton.addEventListener("click", function () {
+      const nextMonth = new Date(
+        calendarMonth.getFullYear(),
+        calendarMonth.getMonth() + 1,
+        1
+      );
+      const currentMonth = new Date();
+      const currentMonthStart = new Date(
+        currentMonth.getFullYear(),
+        currentMonth.getMonth(),
+        1
+      );
+
+      if (nextMonth > currentMonthStart) {
+        return;
+      }
+
+      calendarMonth = nextMonth;
+      selectedCalendarDate = getDateKey(calendarMonth);
+      renderMoodCalendar();
+    });
+
+    readingMinutesInput.addEventListener("input", function () {
+      saveHabitMinutes("readingMinutes", readingMinutesInput, false);
+    });
+
+    readingMinutesInput.addEventListener("change", function () {
+      saveHabitMinutes("readingMinutes", readingMinutesInput, true);
+      readingMinutesInput.value = getTodayState().readingMinutes
+        ? String(getTodayState().readingMinutes)
+        : "";
+    });
+
+    workoutMinutesInput.addEventListener("input", function () {
+      saveHabitMinutes("workoutMinutes", workoutMinutesInput, false);
+    });
+
+    workoutMinutesInput.addEventListener("change", function () {
+      saveHabitMinutes("workoutMinutes", workoutMinutesInput, true);
+      workoutMinutesInput.value = getTodayState().workoutMinutes
+        ? String(getTodayState().workoutMinutes)
+        : "";
     });
 
     waterButton.addEventListener("click", checkWater);

@@ -622,6 +622,76 @@
       font-size: 14px;
     }
 
+    .calendar-detail-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      width: 100%;
+      min-height: 44px;
+      margin-top: 12px;
+      padding: 10px 13px;
+      border: 1px solid #e8dcd5;
+      border-radius: 16px;
+      background: #fffaf6;
+      color: #725a63;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, background 0.2s ease;
+    }
+
+    .calendar-detail-toggle:active {
+      transform: scale(0.97);
+    }
+
+    .calendar-detail-toggle[hidden] {
+      display: none;
+    }
+
+    .calendar-detail-toggle .calendar-detail-chevron {
+      display: inline-block;
+      color: #ad758c;
+      font-size: 17px;
+      transition: transform 0.22s ease;
+    }
+
+    .calendar-detail-toggle[aria-expanded="true"] .calendar-detail-chevron {
+      transform: rotate(180deg);
+    }
+
+    .calendar-detail {
+      margin-top: 10px;
+      padding: 13px;
+      border: 1px solid #eadfd9;
+      border-radius: 17px;
+      background: #fffaf6;
+    }
+
+    .calendar-detail[hidden] {
+      display: none;
+    }
+
+    .daily-summary-details {
+      display: grid;
+      gap: 7px;
+    }
+
+    .daily-summary-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .daily-summary-row strong {
+      color: #755a64;
+      font-size: 12px;
+      text-align: right;
+    }
+
     .wellness-grid {
       display: grid;
       gap: 13px;
@@ -2129,6 +2199,11 @@
         <span id="selectedMoodDate"></span>
         <strong id="selectedMoodText"></strong>
       </div>
+      <button class="calendar-detail-toggle" id="calendarDetailToggle" type="button" aria-expanded="false" hidden>
+        <span id="calendarDetailToggleText">点开这一天的记录</span>
+        <span class="calendar-detail-chevron" aria-hidden="true">⌄</span>
+      </button>
+      <div class="calendar-detail" id="calendarDetail" hidden></div>
     </section>
 
     <section class="wellness-grid">
@@ -2553,6 +2628,9 @@
     const moodCalendarGrid = document.getElementById("moodCalendarGrid");
     const selectedMoodDate = document.getElementById("selectedMoodDate");
     const selectedMoodText = document.getElementById("selectedMoodText");
+    const calendarDetailToggle = document.getElementById("calendarDetailToggle");
+    const calendarDetailToggleText = document.getElementById("calendarDetailToggleText");
+    const calendarDetail = document.getElementById("calendarDetail");
     const totalMeals = document.getElementById("totalMeals");
     const totalEarned = document.getElementById("totalEarned");
     const smallRedemptions = document.getElementById("smallRedemptions");
@@ -2579,6 +2657,7 @@
     let soundEnabled = localStorage.getItem(SOUND_KEY) !== "off";
     let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let selectedCalendarDate = todayKey;
+    let calendarDetailExpanded = false;
 
     todayDate.textContent = new Date().toLocaleDateString("zh-CN", {
       year: "numeric",
@@ -2859,6 +2938,7 @@
         button.append(number, marker);
         button.addEventListener("click", function () {
           selectedCalendarDate = dateKey;
+          calendarDetailExpanded = false;
           renderMoodCalendar();
         });
         moodCalendarGrid.appendChild(button);
@@ -2868,6 +2948,122 @@
       selectedMoodText.textContent = getMoodLabel(
         getMoodForDate(selectedCalendarDate)
       );
+      renderSelectedCalendarDetail();
+    }
+
+    function hasDailySummary(record) {
+      if (!record) {
+        return false;
+      }
+
+      return (
+        mealKeys.some(function (key) {
+          return Boolean(record[key]);
+        }) ||
+        Boolean(record.water) ||
+        Boolean(record.mood) ||
+        Number(record.readingMinutes) > 0 ||
+        Number(record.workoutMinutes) > 0
+      );
+    }
+
+    function formatSummaryDate(dateKey) {
+      const parts = dateKey.split("-").map(Number);
+      const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+      return date.toLocaleDateString("zh-CN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        weekday: "long"
+      });
+    }
+
+    function getDailyMessageForDate(dateKey) {
+      const index = state.dailyMessages[dateKey];
+
+      if (
+        !Number.isInteger(index) ||
+        index < 0 ||
+        index >= dailyMessages.length
+      ) {
+        return "";
+      }
+
+      return dailyMessages[index];
+    }
+
+    function createSummaryRow(label, value) {
+      const row = document.createElement("div");
+      const labelElement = document.createElement("span");
+      const valueElement = document.createElement("strong");
+
+      row.className = "daily-summary-row";
+      labelElement.textContent = label;
+      valueElement.textContent = value;
+      row.append(labelElement, valueElement);
+
+      return row;
+    }
+
+    function renderSelectedCalendarDetail() {
+      const dateKey = selectedCalendarDate;
+      const record = state.daily[dateKey] || {};
+      const hasSummary = hasDailySummary(record);
+
+      calendarDetail.replaceChildren();
+      calendarDetailToggle.hidden = !hasSummary;
+      calendarDetail.hidden = !hasSummary || !calendarDetailExpanded;
+      calendarDetailToggle.setAttribute(
+        "aria-expanded",
+        calendarDetailExpanded ? "true" : "false"
+      );
+      calendarDetailToggleText.textContent = calendarDetailExpanded
+        ? "收起这一天的记录"
+        : "点开这一天的记录";
+
+      if (!hasSummary || !calendarDetailExpanded) {
+        return;
+      }
+
+      const completedMeals = mealKeys.filter(function (key) {
+        return Boolean(record[key]);
+      }).length;
+      const moodText = getMoodForDate(dateKey)
+        ? getMoodLabel(getMoodForDate(dateKey))
+        : "未记录";
+      const detailContainer = document.createElement("div");
+
+      detailContainer.className = "daily-summary-details";
+      detailContainer.append(
+        createSummaryRow("💖 今日心情", moodText),
+        createSummaryRow("🍚 三餐记录", completedMeals + " / 3"),
+        createSummaryRow("💧 喝水", record.water ? "已经喝过水啦" : "未记录"),
+        createSummaryRow(
+          "📚 读书",
+          Number(record.readingMinutes) > 0
+            ? record.readingMinutes + " 分钟"
+            : "未记录"
+        ),
+        createSummaryRow(
+          "🏃 健身",
+          Number(record.workoutMinutes) > 0
+            ? record.workoutMinutes + " 分钟"
+            : "未记录"
+        ),
+        createSummaryRow(
+          "✨ 今日获得",
+          "+" + (Number(record.earnedPoints) || 0) + " Care Points"
+        )
+      );
+
+      const dailyMessage = getDailyMessageForDate(dateKey);
+
+      if (dailyMessage) {
+        detailContainer.appendChild(createSummaryRow("🌷 小纸条", dailyMessage));
+      }
+
+      calendarDetail.appendChild(detailContainer);
     }
 
     function ensureMoodMessages() {
@@ -3058,6 +3254,7 @@
 
       today[field] = minutes;
       saveState();
+      renderSelectedCalendarDetail();
 
       if (showFeedback) {
         showToast(minutes > 0 ? "💭 已更新～" : "🌷 已恢复，可以重新记录。");
@@ -3875,6 +4072,7 @@
         1
       );
       selectedCalendarDate = getDateKey(calendarMonth);
+      calendarDetailExpanded = false;
       renderMoodCalendar();
     });
 
@@ -3897,7 +4095,13 @@
 
       calendarMonth = nextMonth;
       selectedCalendarDate = getDateKey(calendarMonth);
+      calendarDetailExpanded = false;
       renderMoodCalendar();
+    });
+
+    calendarDetailToggle.addEventListener("click", function () {
+      calendarDetailExpanded = !calendarDetailExpanded;
+      renderSelectedCalendarDetail();
     });
 
     readingMinutesInput.addEventListener("input", function () {

@@ -110,6 +110,120 @@
       -webkit-backdrop-filter: blur(18px);
     }
 
+    .auth-card {
+      margin-bottom: 16px;
+      padding: 19px;
+      border-radius: var(--radius-large);
+      animation: rise-in 0.5s ease both;
+    }
+
+    .auth-card h2 {
+      margin: 0 0 4px;
+      color: #725a63;
+      font-size: 18px;
+    }
+
+    .auth-card p {
+      margin: 0 0 13px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 10px;
+    }
+
+    .auth-field {
+      display: grid;
+      gap: 5px;
+      color: #8d6d79;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .auth-input {
+      width: 100%;
+      min-width: 0;
+      padding: 11px 12px;
+      border: 1px solid #e5d8d2;
+      border-radius: 15px;
+      background: #fffaf6;
+      color: #5d4d48;
+      font: inherit;
+    }
+
+    .auth-input:focus {
+      border-color: #d8a7b8;
+      outline: 3px solid rgba(216, 167, 184, 0.2);
+    }
+
+    .auth-submit,
+    .auth-logout {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 17px;
+      background: #d18ea6;
+      color: #ffffff;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.16s ease, opacity 0.2s ease;
+    }
+
+    .auth-submit:active,
+    .auth-logout:active {
+      transform: scale(0.97);
+    }
+
+    .auth-submit:disabled {
+      cursor: wait;
+      opacity: 0.65;
+    }
+
+    .auth-message {
+      min-height: 18px;
+      margin: 0 !important;
+      color: #9a6679 !important;
+      font-size: 12px !important;
+      font-weight: 700;
+    }
+
+    .auth-account {
+      display: grid;
+      gap: 4px;
+      margin-bottom: 13px;
+      padding: 12px 13px;
+      border: 1px solid #eadfd9;
+      border-radius: 16px;
+      background: #fffaf6;
+    }
+
+    .auth-account span {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .auth-account strong {
+      overflow-wrap: anywhere;
+      color: #755a64;
+      font-size: 13px;
+    }
+
+    .cloud-state {
+      margin: 0 !important;
+      color: #789084 !important;
+      font-size: 11px !important;
+      text-align: center;
+    }
+
+    .auth-offline-note {
+      margin-top: 12px !important;
+      margin-bottom: 0 !important;
+      color: #a27183 !important;
+    }
+
     .hero {
       padding: 12px 4px 18px;
       text-align: center;
@@ -2087,6 +2201,39 @@
       </div>
     </header>
 
+    <section class="auth-card glass-card">
+      <div id="authSignedOut">
+        <h2>💌 登录后同步记录</h2>
+        <p>登录后，每天的记录和积分会保存到云端，换设备也能继续。</p>
+        <form class="auth-form" id="loginForm">
+          <label class="auth-field">
+            <span>邮箱</span>
+            <input class="auth-input" id="loginEmail" type="email" autocomplete="email" required>
+          </label>
+          <label class="auth-field">
+            <span>密码</span>
+            <input class="auth-input" id="loginPassword" type="password" autocomplete="current-password" required>
+          </label>
+          <button class="auth-submit" id="loginButton" type="submit">登录并同步</button>
+          <p class="auth-message" id="authMessage"></p>
+        </form>
+      </div>
+
+      <div id="authSignedIn" hidden>
+        <h2>☁️ 已连接到云端</h2>
+        <div class="auth-account">
+          <span>当前账号</span>
+          <strong id="authUserEmail"></strong>
+        </div>
+        <p class="cloud-state" id="cloudState">正在同步记录…</p>
+        <button class="auth-logout" id="logoutButton" type="button">退出登录</button>
+      </div>
+
+      <p class="auth-offline-note" id="authOfflineNote" hidden>
+        当前无法连接登录服务，仍可以继续使用本地记录。
+      </p>
+    </section>
+
     <section class="sunshine-card glass-card">
       <div class="sunshine-icon">🌸</div>
       <div>
@@ -2391,9 +2538,25 @@
 
   <div class="celebration-layer" id="celebrationLayer" aria-hidden="true"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     const STORAGE_KEY = "nonno-care-checkin-v1";
     const SOUND_KEY = "nonno-care-sound";
+    const SUPABASE_URL = "https://yrbqvuksychdwmciaihq.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_NWvDWEJ_tt4ZHXohXGNNKA_j7xWp3dk";
+    const supabaseClient = window.supabase
+      ? window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        }
+      )
+      : null;
     const mealKeys = ["breakfast", "lunch", "dinner"];
     const moodLabels = {
       happy: "很开心",
@@ -2596,6 +2759,17 @@
     ];
 
     const todayKey = getDateKey(new Date());
+    const authSignedOut = document.getElementById("authSignedOut");
+    const authSignedIn = document.getElementById("authSignedIn");
+    const loginForm = document.getElementById("loginForm");
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginButton = document.getElementById("loginButton");
+    const authMessage = document.getElementById("authMessage");
+    const authUserEmail = document.getElementById("authUserEmail");
+    const cloudState = document.getElementById("cloudState");
+    const logoutButton = document.getElementById("logoutButton");
+    const authOfflineNote = document.getElementById("authOfflineNote");
     const todayDate = document.getElementById("todayDate");
     const todayStatus = document.getElementById("todayStatus");
     const pointsValue = document.getElementById("pointsValue");
@@ -2658,6 +2832,11 @@
     let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
     let selectedCalendarDate = todayKey;
     let calendarDetailExpanded = false;
+    let currentUser = null;
+    let loadedCloudUserId = "";
+    let cloudSaveTimer = null;
+    let cloudSaveInFlight = false;
+    let cloudSaveQueued = false;
 
     todayDate.textContent = new Date().toLocaleDateString("zh-CN", {
       year: "numeric",
@@ -2688,43 +2867,252 @@
         bigRedemptions: 0,
         dailyMessages: {},
         moodHistory: {},
-        daily: {}
+        daily: {},
+        updatedAt: ""
+      };
+    }
+
+    function normalizeState(stored) {
+      const base = getDefaultState();
+
+      if (!stored || typeof stored !== "object") {
+        return base;
+      }
+
+      return {
+        points: Number(stored.points) || 0,
+        totalMeals: Number(stored.totalMeals) || 0,
+        totalEarned: Number(stored.totalEarned) || 0,
+        smallRedemptions: Number(
+          stored.smallRedemptions ?? stored.totalRedemptions
+        ) || 0,
+        bigRedemptions: Number(stored.bigRedemptions) || 0,
+        dailyMessages: stored.dailyMessages && typeof stored.dailyMessages === "object"
+          ? stored.dailyMessages
+          : {},
+        moodHistory: stored.moodHistory && typeof stored.moodHistory === "object"
+          ? stored.moodHistory
+          : {},
+        daily: stored.daily && typeof stored.daily === "object" ? stored.daily : {},
+        updatedAt: typeof stored.updatedAt === "string" ? stored.updatedAt : ""
       };
     }
 
     function loadState() {
-      const base = getDefaultState();
-
       try {
-        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-        if (!stored || typeof stored !== "object") {
-          return base;
-        }
-
-        return {
-          points: Number(stored.points) || 0,
-          totalMeals: Number(stored.totalMeals) || 0,
-          totalEarned: Number(stored.totalEarned) || 0,
-          smallRedemptions: Number(
-            stored.smallRedemptions ?? stored.totalRedemptions
-          ) || 0,
-          bigRedemptions: Number(stored.bigRedemptions) || 0,
-          dailyMessages: stored.dailyMessages && typeof stored.dailyMessages === "object"
-            ? stored.dailyMessages
-            : {},
-          moodHistory: stored.moodHistory && typeof stored.moodHistory === "object"
-            ? stored.moodHistory
-            : {},
-          daily: stored.daily && typeof stored.daily === "object" ? stored.daily : {}
-        };
+        return normalizeState(JSON.parse(localStorage.getItem(STORAGE_KEY)));
       } catch (error) {
-        return base;
+        return getDefaultState();
       }
     }
 
-    function saveState() {
+    function persistLocalState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function saveState() {
+      state.updatedAt = new Date().toISOString();
+      persistLocalState();
+      scheduleCloudSave();
+    }
+
+    function hasMeaningfulState(record) {
+      if (!record || typeof record !== "object") {
+        return false;
+      }
+
+      return Boolean(
+        Number(record.points) > 0 ||
+        Number(record.totalMeals) > 0 ||
+        Object.keys(record.daily || {}).length > 0 ||
+        Object.keys(record.moodHistory || {}).length > 0
+      );
+    }
+
+    function updateAuthInterface() {
+      const signedIn = Boolean(currentUser);
+
+      authSignedOut.hidden = signedIn;
+      authSignedIn.hidden = !signedIn;
+      authOfflineNote.hidden = Boolean(supabaseClient);
+
+      if (signedIn) {
+        authUserEmail.textContent = currentUser.email || "已登录";
+      }
+    }
+
+    async function saveStateToCloud() {
+      if (!currentUser || !supabaseClient || cloudSaveInFlight) {
+        cloudSaveQueued = Boolean(currentUser && supabaseClient);
+        return;
+      }
+
+      cloudSaveInFlight = true;
+      cloudSaveQueued = false;
+      cloudState.textContent = "正在同步记录…";
+
+      const snapshot = JSON.parse(JSON.stringify(state));
+      const { error } = await supabaseClient
+        .from("user_state")
+        .upsert(
+          {
+            user_id: currentUser.id,
+            state: snapshot,
+            updated_at: new Date().toISOString()
+          },
+          { onConflict: "user_id" }
+        );
+
+      cloudSaveInFlight = false;
+
+      if (error) {
+        cloudState.textContent = "云端同步暂时失败，本地记录仍然保留。";
+      } else {
+        cloudState.textContent = "记录已同步到云端 ☁️";
+      }
+
+      if (cloudSaveQueued) {
+        scheduleCloudSave();
+      }
+    }
+
+    function scheduleCloudSave() {
+      if (!currentUser || !supabaseClient) {
+        return;
+      }
+
+      clearTimeout(cloudSaveTimer);
+      cloudSaveTimer = setTimeout(saveStateToCloud, 700);
+    }
+
+    async function loadCloudStateForUser(user) {
+      if (loadedCloudUserId === user.id) {
+        return;
+      }
+
+      loadedCloudUserId = user.id;
+      currentUser = user;
+      updateAuthInterface();
+      cloudState.textContent = "正在读取云端记录…";
+
+      const { data, error } = await supabaseClient
+        .from("user_state")
+        .select("state, updated_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        cloudState.textContent = "云端读取失败，暂时使用本地记录。";
+        return;
+      }
+
+      if (!data) {
+        await saveStateToCloud();
+        return;
+      }
+
+      const localHasData = hasMeaningfulState(state);
+      const cloudHasData = hasMeaningfulState(data.state);
+      const localUpdatedAt = Date.parse(state.updatedAt || "") || 0;
+      const cloudUpdatedAt =
+        Date.parse(data.state && data.state.updatedAt) ||
+        Date.parse(data.updated_at) ||
+        0;
+
+      if (!localHasData && cloudHasData) {
+        state = normalizeState(data.state);
+        persistLocalState();
+        ensureMoodMessages();
+        dailyMessage.textContent = getDailyMessage();
+        updateInterface();
+        cloudState.textContent = "已读取云端记录 ☁️";
+        return;
+      }
+
+      if (localHasData && cloudUpdatedAt > localUpdatedAt + 1000) {
+        state = normalizeState(data.state);
+        persistLocalState();
+        ensureMoodMessages();
+        dailyMessage.textContent = getDailyMessage();
+        updateInterface();
+        cloudState.textContent = "已使用较新的云端记录 ☁️";
+        return;
+      }
+
+      await saveStateToCloud();
+    }
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      if (!supabaseClient) {
+        authMessage.textContent = "登录服务暂时不可用，本地记录不受影响。";
+        return;
+      }
+
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value;
+
+      if (!email || !password) {
+        authMessage.textContent = "请填写邮箱和密码。";
+        return;
+      }
+
+      loginButton.disabled = true;
+      authMessage.textContent = "正在登录…";
+
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      loginButton.disabled = false;
+
+      if (error) {
+        if (error.message && error.message.toLowerCase().includes("email not confirmed")) {
+          authMessage.textContent = "邮箱还没有验证，请先去邮箱完成确认。";
+        } else {
+          authMessage.textContent = "登录没有成功，请检查邮箱和密码。";
+        }
+        return;
+      }
+
+      authMessage.textContent = "";
+      loginPassword.value = "";
+      await loadCloudStateForUser(data.user);
+    }
+
+    async function initializeAuth() {
+      updateAuthInterface();
+
+      if (!supabaseClient) {
+        authMessage.textContent = "登录服务没有加载，仍可以继续使用本地记录。";
+        return;
+      }
+
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        authMessage.textContent = "暂时无法读取登录状态，本地记录不受影响。";
+      } else if (data.session && data.session.user) {
+        await loadCloudStateForUser(data.session.user);
+      }
+
+      supabaseClient.auth.onAuthStateChange(function (event, session) {
+        if (event === "SIGNED_OUT") {
+          currentUser = null;
+          loadedCloudUserId = "";
+          updateAuthInterface();
+          authMessage.textContent = "已退出登录，本地记录仍然保留。";
+          return;
+        }
+
+        if (session && session.user) {
+          if (!currentUser || currentUser.id !== session.user.id) {
+            loadCloudStateForUser(session.user);
+          }
+        }
+      });
     }
 
     function getTodayState() {
@@ -4152,6 +4540,20 @@
         shareModal.hidden = true;
       }
     });
+
+    loginForm.addEventListener("submit", handleLogin);
+
+    logoutButton.addEventListener("click", async function () {
+      if (!supabaseClient) {
+        return;
+      }
+
+      logoutButton.disabled = true;
+      await supabaseClient.auth.signOut();
+      logoutButton.disabled = false;
+    });
+
+    initializeAuth();
 
     if (state.points >= 100) {
       setTimeout(openRewardModal, 700);

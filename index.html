@@ -3069,10 +3069,22 @@
       loginButton.disabled = false;
 
       if (error) {
-        if (error.message && error.message.toLowerCase().includes("email not confirmed")) {
+        const errorCode = String(error.code || "");
+        const errorMessage = String(error.message || "").toLowerCase();
+
+        if (
+          errorCode === "email_not_confirmed" ||
+          errorMessage.includes("email not confirmed")
+        ) {
           authMessage.textContent = "邮箱还没有验证，请先去邮箱完成确认。";
+        } else if (errorCode === "invalid_credentials") {
+          authMessage.textContent = "邮箱或密码不正确。请确认使用的是 Supabase 用户列表里的邮箱。";
+        } else if (error.status === 429 || errorCode.includes("rate_limit")) {
+          authMessage.textContent = "尝试次数有点多，请等一分钟后再试。";
+        } else if (errorMessage.includes("failed to fetch")) {
+          authMessage.textContent = "网络连接失败，请检查手机网络后重试。";
         } else {
-          authMessage.textContent = "登录没有成功，请检查邮箱和密码。";
+          authMessage.textContent = "登录失败：" + (error.message || "未知原因");
         }
         return;
       }
